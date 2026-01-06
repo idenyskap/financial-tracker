@@ -227,7 +227,7 @@ public class GlobalExceptionHandler {
     if (ex.getMessage().contains("TransactionType")) {
       message = "Invalid transaction type. Must be 'INCOME' or 'EXPENSE'";
     } else if (ex.getMessage().contains("LocalDate")) {
-      message = "Invalid date format. Use YYYY-MM-DD format";
+      message = "Invalid date format. Supported formats: YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, MM/DD/YYYY";
     } else if (ex.getMessage().contains("BigDecimal")) {
       message = "Invalid amount format";
     }
