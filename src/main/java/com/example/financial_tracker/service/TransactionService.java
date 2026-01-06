@@ -31,9 +31,7 @@ import java.io.*;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
@@ -654,29 +652,6 @@ public class TransactionService {
     return result;
   }
 
-  private static final List<DateTimeFormatter> DATE_FORMATTERS = Arrays.asList(
-    DateTimeFormatter.ISO_LOCAL_DATE,                    // 2024-01-15
-    DateTimeFormatter.ofPattern("dd.MM.yyyy"),           // 15.01.2024
-    DateTimeFormatter.ofPattern("dd/MM/yyyy"),           // 15/01/2024
-    DateTimeFormatter.ofPattern("MM/dd/yyyy"),           // 01/15/2024
-    DateTimeFormatter.ofPattern("dd-MM-yyyy"),           // 15-01-2024
-    DateTimeFormatter.ofPattern("yyyy/MM/dd"),           // 2024/01/15
-    DateTimeFormatter.ofPattern("d.M.yyyy"),             // 5.1.2024
-    DateTimeFormatter.ofPattern("d/M/yyyy"),             // 5/1/2024
-    DateTimeFormatter.ofPattern("M/d/yyyy")              // 1/5/2024
-  );
-
-  private LocalDate parseDate(String dateStr) {
-    String trimmed = dateStr.trim();
-    for (DateTimeFormatter formatter : DATE_FORMATTERS) {
-      try {
-        return LocalDate.parse(trimmed, formatter);
-      } catch (DateTimeParseException ignored) {
-      }
-    }
-    throw new DateTimeParseException("Unable to parse date", trimmed, 0);
-  }
-
   private TransactionDTO parseCsvLine(String line, int rowNumber, User user) {
     String[] values = line.split(",");
 
@@ -687,7 +662,7 @@ public class TransactionService {
     try {
       TransactionDTO dto = new TransactionDTO();
 
-      dto.setDate(parseDate(values[0]));
+      dto.setDate(LocalDate.parse(values[0].trim()));
 
       dto.setAmount(new BigDecimal(values[1].trim()));
 
@@ -708,7 +683,7 @@ public class TransactionService {
 
       return dto;
     } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException("Invalid date format. Supported formats: YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY, MM/DD/YYYY");
+      throw new IllegalArgumentException("Invalid date format. Use YYYY-MM-DD");
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("Invalid amount format");
     }

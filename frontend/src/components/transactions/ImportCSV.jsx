@@ -13,11 +13,22 @@ function ImportCSV({ onImportComplete }) {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.type === 'text/csv') {
-      setFile(selectedFile);
-    } else {
-      toast.error(t('import.selectCSVFile'));
-      e.target.value = '';
+    if (selectedFile) {
+      const validTypes = [
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      ];
+      const validExtensions = ['.csv', '.xls', '.xlsx'];
+      const fileName = selectedFile.name.toLowerCase();
+      const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+
+      if (validTypes.includes(selectedFile.type) || hasValidExtension) {
+        setFile(selectedFile);
+      } else {
+        toast.error(t('import.selectValidFile') || 'Please select a CSV or Excel file (.csv, .xls, .xlsx)');
+        e.target.value = '';
+      }
     }
   };
 
@@ -117,13 +128,13 @@ function ImportCSV({ onImportComplete }) {
                   <div style={styles.fileUpload}>
                     <input
                       type="file"
-                      accept=".csv"
+                      accept=".csv,.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                       onChange={handleFileChange}
                       style={styles.fileInput}
                       id="csv-file"
                     />
                     <label htmlFor="csv-file" style={styles.fileLabel}>
-                      {file ? file.name : t('import.chooseFile')}
+                      {file ? file.name : (t('import.chooseFile') || 'Choose CSV or Excel file')}
                     </label>
                   </div>
 

@@ -495,20 +495,21 @@ public class TransactionController {
     @RequestParam("file") MultipartFile file,
     HttpServletRequest request) {
 
-    log.info("POST /api/transactions/import/csv - User: {} from IP: {} importing CSV file: {}",
+    String filename = file.getOriginalFilename() != null ? file.getOriginalFilename().toLowerCase() : "";
+    log.info("POST /api/transactions/import/csv - User: {} from IP: {} importing file: {}",
       user.getEmail(), RequestUtils.getClientIpAddress(request), file.getOriginalFilename());
 
     if (file.isEmpty()) {
       throw new BadRequestException("Please select a file to import");
     }
 
-    if (!file.getOriginalFilename().toLowerCase().endsWith(".csv")) {
-      throw new BadRequestException("Only CSV files are supported");
+    if (!filename.endsWith(".csv") && !filename.endsWith(".xlsx") && !filename.endsWith(".xls")) {
+      throw new BadRequestException("Only CSV and Excel files (.csv, .xlsx, .xls) are supported");
     }
 
-    ImportResultDTO result = transactionService.importFromCsv(user, file);
+    ImportResultDTO result = transactionService.importFromFile(user, file);
 
-    log.info("CSV import completed for user: {} - Success: {}, Failed: {}",
+    log.info("File import completed for user: {} - Success: {}, Failed: {}",
       user.getEmail(), result.getSuccessfulImports(), result.getFailedImports());
 
     return ResponseEntity.ok(result);
