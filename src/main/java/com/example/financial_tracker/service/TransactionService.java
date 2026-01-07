@@ -31,6 +31,7 @@ import java.io.*;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -652,6 +653,59 @@ public class TransactionService {
     return result;
   }
 
+  private static final List<DateTimeFormatter> DATE_FORMATTERS = List.of(
+    DateTimeFormatter.ISO_LOCAL_DATE,                    // 2026-01-15
+    DateTimeFormatter.ofPattern("M/d/yyyy"),             // 1/15/2026
+    DateTimeFormatter.ofPattern("MM/dd/yyyy"),           // 01/15/2026
+    DateTimeFormatter.ofPattern("d/M/yyyy"),             // 15/1/2026
+    DateTimeFormatter.ofPattern("dd/MM/yyyy"),           // 15/01/2026
+    DateTimeFormatter.ofPattern("yyyy/MM/dd"),           // 2026/01/15
+    DateTimeFormatter.ofPattern("d.M.yyyy"),             // 15.1.2026
+    DateTimeFormatter.ofPattern("dd.MM.yyyy"),           // 15.01.2026
+    DateTimeFormatter.ofPattern("d-M-yyyy"),             // 15-1-2026
+    DateTimeFormatter.ofPattern("dd-MM-yyyy")            // 15-01-2026
+  );
+
+  private LocalDate parseDate(String dateStr) {
+    String trimmed = dateStr.trim();
+    for (DateTimeFormatter formatter : DATE_FORMATTERS) {
+      try {
+        return LocalDate.parse(trimmed, formatter);
+      } catch (DateTimeParseException e) {
+      }
+    }
+    throw new DateTimeParseException("Unable to parse date", trimmed, 0);
+  }
+
+  private BigDecimal parseAmount(String amountStr) {
+    String cleaned = amountStr.trim();
+
+    // Remove currency symbols and whitespace
+    cleaned = cleaned.replaceAll("[€$£₴₽¥\\s]", "");
+
+    if (cleaned.startsWith("(") && cleaned.endsWith(")")) {
+      cleaned = "-" + cleaned.substring(1, cleaned.length() - 1);
+    }
+
+    int lastDot = cleaned.lastIndexOf('.');
+    int lastComma = cleaned.lastIndexOf(',');
+
+    if (lastComma > lastDot) {
+      cleaned = cleaned.replace(".", "").replace(",", ".");
+    } else if (lastDot > lastComma) {
+      cleaned = cleaned.replace(",", "");
+    } else if (lastComma != -1 && lastDot == -1) {
+      String afterComma = cleaned.substring(lastComma + 1);
+      if (afterComma.length() <= 2) {
+        cleaned = cleaned.replace(",", ".");
+      } else {
+        cleaned = cleaned.replace(",", "");
+      }
+    }
+
+    return new BigDecimal(cleaned);
+  }
+
   private TransactionDTO parseCsvLine(String line, int rowNumber, User user) {
     String[] values = line.split(",");
 
@@ -662,9 +716,9 @@ public class TransactionService {
     try {
       TransactionDTO dto = new TransactionDTO();
 
-      dto.setDate(LocalDate.parse(values[0].trim()));
+      dto.setDate(parseDate(values[0].trim()));
 
-      dto.setAmount(new BigDecimal(values[1].trim()));
+      dto.setAmount(parseAmount(values[1].trim()));
 
       String type = values[2].trim().toUpperCase();
       if (!type.equals("INCOME") && !type.equals("EXPENSE")) {
@@ -683,7 +737,7 @@ public class TransactionService {
 
       return dto;
     } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException("Invalid date format. Use YYYY-MM-DD");
+      throw new IllegalArgumentException("Invalid date format. Supported: YYYY-MM-DD, M/d/yyyy, dd.MM.yyyy, etc.");
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("Invalid amount format");
     }
@@ -786,7 +840,7 @@ public class TransactionService {
         dto.setDate(dateCell.getLocalDateTimeCellValue().toLocalDate());
       } else {
         String dateStr = getCellStringValue(dateCell);
-        dto.setDate(LocalDate.parse(dateStr.trim()));
+        dto.setDate(parseDate(dateStr));
       }
 
       Cell amountCell = row.getCell(1);
