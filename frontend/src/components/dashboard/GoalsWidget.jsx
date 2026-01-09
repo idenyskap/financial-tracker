@@ -5,7 +5,7 @@ import { useCurrency } from '../../hooks/useCurrency';
 import { useLanguage } from '../../hooks/useLanguage';
 
 function GoalsWidget() {
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
   const { data: goalsData } = useQuery({
     queryKey: ['goals', true],
@@ -56,9 +56,9 @@ function GoalsWidget() {
 
               <div style={styles.goalProgress}>
                 <div style={styles.progressInfo}>
-                  <span style={styles.currentAmount}>{formatCurrency(goal.currentAmount)}</span>
+                  <span style={styles.currentAmount}>{formatDualCurrency(goal.currentAmount)}</span>
                   <span style={styles.targetAmount}>
-                    {t('goals.of')} {formatCurrency(goal.targetAmount)}
+                    {t('goals.of')} {formatDualCurrency(goal.targetAmount)}
                   </span>
                 </div>
 
@@ -77,7 +77,7 @@ function GoalsWidget() {
                   <span>{progressPercentage.toFixed(0)}%</span>
                   {goal.requiredMonthlySaving > 0 && (
                     <span style={styles.monthlySaving}>
-                      {formatCurrency(goal.requiredMonthlySaving)}/mo
+                      {formatDualCurrency(goal.requiredMonthlySaving)}/mo
                     </span>
                   )}
                 </div>
@@ -94,7 +94,7 @@ function GoalsWidget() {
         </div>
         <div style={styles.stat}>
           <span style={styles.statValue}>
-            {formatCurrency(goals.reduce((sum, g) => sum + g.currentAmount, 0))}
+            {formatDualCurrency(goals.reduce((sum, g) => sum + g.currentAmount, 0))}
           </span>
           <span style={styles.statLabel}>{t('goals.totalSaved')}</span>
         </div>

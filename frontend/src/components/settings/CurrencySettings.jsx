@@ -69,7 +69,7 @@ const CurrencySettings = () => {
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <h3 style={styles.sectionTitle}>
-            <span style={styles.sectionIcon}>💰</span>
+            <span style={styles.sectionIcon}></span>
             {t('profile.primaryCurrencyTitle')}
           </h3>
           <p style={styles.sectionDescription}>
@@ -101,7 +101,7 @@ const CurrencySettings = () => {
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <h3 style={styles.sectionTitle}>
-            <span style={styles.sectionIcon}>🔄</span>
+            <span style={styles.sectionIcon}></span>
             {t('profile.secondaryCurrencyTitle')}
           </h3>
           <p style={styles.sectionDescription}>
@@ -161,6 +161,7 @@ const CurrencySettings = () => {
               <option value="CNY">🇨🇳 CNY - Chinese Yuan</option>
               <option value="SEK">🇸🇪 SEK - Swedish Krona</option>
               <option value="NZD">🇳🇿 NZD - New Zealand Dollar</option>
+              <option value="UAH">🇺🇦 UAH - Ukrainian Hryvnia</option>
             </select>
           </div>
         )}

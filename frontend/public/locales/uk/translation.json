@@ -73,6 +73,7 @@
     "title": "Транзакції",
     "addTransaction": "Додати транзакцію",
     "editTransaction": "Редагувати транзакцію",
+    "updateTransaction": "Оновити транзакцію",
     "amount": "Сума",
     "description": "Опис",
     "category": "Категорія",
@@ -216,5 +217,19 @@
     "unauthorized": "Ви не маєте доступу",
     "notFound": "Ресурс не знайдено",
     "serverError": "Сталася помилка сервера"
+  },
+  "pagination": {
+    "showing": "Показано",
+    "of": "з",
+    "previous": "Назад",
+    "next": "Далі",
+    "page": "Сторінка",
+    "goToPage": "Перейти на сторінку",
+    "showMore": "Показати ще",
+    "loadingMore": "Завантаження...",
+    "scrollForMore": "Прокрутіть вниз для завантаження",
+    "allLoaded": "Всі транзакції завантажено",
+    "backToPages": "Назад до сторінок",
+    "scrollToTop": "Прокрутити вгору"
   }
 }

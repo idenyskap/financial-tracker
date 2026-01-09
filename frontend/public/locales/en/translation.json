@@ -73,6 +73,7 @@
     "title": "Transactions",
     "addTransaction": "Add Transaction",
     "editTransaction": "Edit Transaction",
+    "updateTransaction": "Update Transaction",
     "amount": "Amount",
     "description": "Description",
     "category": "Category",
@@ -216,5 +217,19 @@
     "unauthorized": "You are not authorized",
     "notFound": "Resource not found",
     "serverError": "Server error occurred"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "goToPage": "Go to page",
+    "showMore": "Show more",
+    "loadingMore": "Loading more...",
+    "scrollForMore": "Scroll down to load more",
+    "allLoaded": "All transactions loaded",
+    "backToPages": "Back to pages",
+    "scrollToTop": "Scroll to top"
   }
 }

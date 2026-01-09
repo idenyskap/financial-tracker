@@ -121,6 +121,21 @@ public class TransactionController {
     return ResponseEntity.noContent().build();
   }
 
+  @DeleteMapping("/bulk")
+  public ResponseEntity<Map<String, Integer>> deleteTransactionsBulk(
+    @RequestBody List<Long> ids,
+    @AuthenticationPrincipal User user,
+    HttpServletRequest request) {
+
+    log.info("DELETE /api/transactions/bulk - User: {} from IP: {} deleting {} transactions",
+      user.getEmail(), RequestUtils.getClientIpAddress(request), ids.size());
+
+    int deletedCount = transactionService.deleteTransactionsBulk(ids, user);
+
+    log.info("Successfully deleted {} transactions for user: {}", deletedCount, user.getEmail());
+    return ResponseEntity.ok(Map.of("deleted", deletedCount));
+  }
+
   @GetMapping("/balance")
   public ResponseEntity<BigDecimal> getBalance(
     @AuthenticationPrincipal User user,

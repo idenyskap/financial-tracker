@@ -88,7 +88,7 @@ const CurrencyConverter = () => {
           <p style={styles.subtitle}>{t('converter.subtitle')}</p>
         </div>
         <button onClick={() => setShowHistory(!showHistory)} style={styles.historyButton}>
-          <span style={styles.buttonIcon}>📊</span>
+          <span style={styles.buttonIcon}></span>
           {showHistory ? t('converter.hideHistory') : t('converter.showHistory')}
         </button>
       </div>
@@ -188,7 +188,7 @@ const CurrencyConverter = () => {
           {result && (
             <div style={styles.resultSection}>
               <div style={styles.resultContent}>
-                <div style={styles.resultIcon}>💱</div>
+                <div style={styles.resultIcon}></div>
                 <div style={styles.resultAmount}>
                   {result.convertedAmount.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
@@ -224,7 +224,7 @@ const CurrencyConverter = () => {
           {/* Error State */}
           {conversionMutation.isError && (
             <div style={styles.errorState}>
-              <span style={styles.errorIcon}>⚠️</span>
+              <span style={styles.errorIcon}></span>
               <span style={styles.errorText}>
                 {conversionMutation.error?.response?.data?.message || t('converter.conversionFailed')}
               </span>
@@ -238,7 +238,7 @@ const CurrencyConverter = () => {
         <div style={styles.historySection}>
           <div style={styles.sectionHeader}>
             <h3 style={styles.sectionTitle}>
-              <span style={styles.sectionIcon}>📈</span>
+              <span style={styles.sectionIcon}></span>
               {t('converter.recentConversions')}
             </h3>
           </div>
@@ -271,7 +271,7 @@ const CurrencyConverter = () => {
         <div style={styles.ratesSection}>
           <div style={styles.sectionHeader}>
             <h3 style={styles.sectionTitle}>
-              <span style={styles.sectionIcon}>💹</span>
+              <span style={styles.sectionIcon}></span>
               {t('converter.currentExchangeRates')} ({fromCurrency} {t('converter.base')})
             </h3>
           </div>

@@ -118,6 +118,7 @@ function ImportCSV({ onImportComplete }) {
                       <li>{t('import.formatList.2')}</li>
                       <li>{t('import.formatList.3')}</li>
                       <li>{t('import.formatList.4')}</li>
+                      <li>{t('import.formatList.5')}</li>
                     </ul>
                     <button onClick={downloadTemplate} style={styles.templateButton}>
                       <DocumentTextIcon style={styles.smallIcon} />

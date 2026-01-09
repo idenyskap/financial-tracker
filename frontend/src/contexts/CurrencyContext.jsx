@@ -21,14 +21,16 @@ export const CurrencyProvider = ({ children }) => {
   });
 
   // Fetch exchange rates when preferences change
+  // Need rates when: default currency is not USD OR secondary currency display is enabled
+  const needsRates = preferences.defaultCurrency !== 'USD' || preferences.displaySecondary;
+
   const { data: ratesData } = useQuery({
-    queryKey: ['exchangeRates', preferences.defaultCurrency],
+    queryKey: ['exchangeRates'],
     queryFn: async () => {
-      if (preferences.defaultCurrency === 'USD') return {}; // No conversion needed
-      const response = await api.get(`/currency/rates/USD`);
+      const response = await api.get('/currency/rates/USD');
       return response.data;
     },
-    enabled: !!preferences.defaultCurrency && preferences.defaultCurrency !== 'USD',
+    enabled: needsRates,
     staleTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 

@@ -188,7 +188,7 @@ function BudgetsPage() {
                 >
                   {periods.map(period => (
                     <option key={period.value} value={period.value}>
-                      📅 {period.label}
+                      {period.label}
                     </option>
                   ))}
                 </select>
@@ -253,7 +253,7 @@ function BudgetsPage() {
         </div>
       ) : budgets.length === 0 ? (
         <div style={styles.emptyState}>
-          <div style={styles.emptyIcon}>💰</div>
+          <div style={styles.emptyIcon}></div>
           <p style={styles.emptyText}>{t('budgets.noBudgets')}</p>
           <p style={styles.emptySubtext}>{t('budgets.noBudgetsSubtext')}</p>
         </div>
@@ -270,14 +270,14 @@ function BudgetsPage() {
                       style={styles.editBtn}
                       title={t('budgets.editTooltip')}
                     >
-                      {t('budgets.editLabel')}
+                      ✏️ {t('budgets.editLabel')}
                     </button>
                     <button
                       onClick={() => handleDelete(budget.id)}
                       style={styles.deleteBtn}
                       title={t('budgets.deleteTooltip')}
                     >
-                      {t('budgets.deleteLabel')}
+                      🗑️ {t('budgets.deleteLabel')}
                     </button>
                   </div>
                 </div>
@@ -560,13 +560,13 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     gap: '0.5rem',
     padding: '0.5rem 1rem',
-    backgroundColor: theme.dangerBackground,
-    border: `1px solid ${theme.dangerBorder}`,
+    backgroundColor: '#fef2f2',
+    border: '1px solid #fecaca',
     borderRadius: '6px',
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',
-    color: theme.danger,
+    color: '#dc2626',
     transition: 'all 0.2s ease',
   },
 });

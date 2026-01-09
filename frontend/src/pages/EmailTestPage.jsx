@@ -98,7 +98,7 @@ function EmailTestPage() {
           borderRadius: '8px',
           backgroundColor: '#f9f9f9'
         }}>
-          <h3>📊 Weekly Report</h3>
+          <h3>Weekly Report</h3>
           <p>Summary of last 7 days</p>
           <button
             onClick={() => sendEmail('weekly-report')}
@@ -115,7 +115,7 @@ function EmailTestPage() {
           borderRadius: '8px',
           backgroundColor: '#f9f9f9'
         }}>
-          <h3>📈 Monthly Report</h3>
+          <h3>Monthly Report</h3>
           <p>Comprehensive monthly analysis</p>
           <button
             onClick={() => sendEmail('monthly-report')}
@@ -132,7 +132,7 @@ function EmailTestPage() {
           borderRadius: '8px',
           backgroundColor: '#f9f9f9'
         }}>
-          <h3>💳 Payment Reminder</h3>
+          <h3>Payment Reminder</h3>
           <p>Upcoming payment notification</p>
           <button
             onClick={() => sendEmail('payment-reminder')}
@@ -158,7 +158,7 @@ function EmailTestPage() {
             cursor: 'pointer'
           }}
         >
-          🚀 Send All Test Emails
+          Send All Test Emails
         </button>
       </div>
 

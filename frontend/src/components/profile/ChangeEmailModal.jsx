@@ -120,7 +120,7 @@ function ChangeEmailModal({ currentEmail, onClose, onSuccess }) {
           </div>
 
           <div style={styles.info}>
-            ℹ️ We'll send a confirmation link to your new email address.
+            We'll send a confirmation link to your new email address.
             Your email won't be changed until you confirm it.
           </div>
 

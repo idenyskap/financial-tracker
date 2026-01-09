@@ -67,7 +67,7 @@ function NotificationSettingsPage() {
       {settings.emailEnabled && (
         <>
           <section className="settings-section">
-            <h2>📊 Reports & Analytics</h2>
+            <h2>Reports & Analytics</h2>
             <p className="section-description">
               Stay informed with regular summaries of your financial activity
             </p>
@@ -104,7 +104,7 @@ function NotificationSettingsPage() {
           </section>
 
           <section className="settings-section">
-            <h2>💳 Payment Reminders</h2>
+            <h2>Payment Reminders</h2>
             <p className="section-description">
               Never miss a scheduled payment or subscription
             </p>

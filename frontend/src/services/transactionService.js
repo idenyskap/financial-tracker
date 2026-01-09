@@ -6,6 +6,7 @@ export const transactionService = {
   create: (data) => api.post('/transactions', data),
   update: (id, data) => api.put(`/transactions/${id}`, data),
   delete: (id) => api.delete(`/transactions/${id}`),
+  deleteBulk: (ids) => api.delete('/transactions/bulk', { data: ids }),
   search: (params) => api.get('/transactions/search', { params }),
   getStats: () => api.get('/transactions/stats'),
   exportCSV: (params) => api.get('/transactions/export/csv', {

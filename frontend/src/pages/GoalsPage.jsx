@@ -11,7 +11,7 @@ import { useLanguage } from '../hooks/useLanguage';
 
 function GoalsPage() {
   const styles = useThemedStyles(getStyles);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -193,7 +193,7 @@ function GoalsPage() {
             onClick={() => setActiveOnly(!activeOnly)}
             style={styles.filterButton}
           >
-            <span style={styles.buttonIcon}>🔍</span>
+            <span style={styles.buttonIcon}></span>
             {activeOnly ? t('goals.showAll') : t('goals.activeOnly')}
           </button>
           <button onClick={() => setShowForm(!showForm)} style={styles.addButton}>
@@ -207,30 +207,30 @@ function GoalsPage() {
       <div style={styles.statsSection}>
         <div style={styles.statsGrid}>
           <div style={styles.statCard}>
-            <div style={styles.statIcon}>🎯</div>
+            <div style={styles.statIcon}></div>
             <div style={styles.statContent}>
               <h3 style={styles.statValue}>{activeGoals.length}</h3>
               <p style={styles.statLabel}>{t('goals.activeGoals')}</p>
             </div>
           </div>
           <div style={styles.statCard}>
-            <div style={styles.statIcon}>✅</div>
+            <div style={styles.statIcon}></div>
             <div style={styles.statContent}>
               <h3 style={styles.statValue}>{completedGoals.length}</h3>
               <p style={styles.statLabel}>{t('goals.completed')}</p>
             </div>
           </div>
           <div style={styles.statCard}>
-            <div style={styles.statIcon}>💰</div>
+            <div style={styles.statIcon}></div>
             <div style={styles.statContent}>
-              <h3 style={styles.statValue}>{formatCurrency(totalSaved)}</h3>
+              <h3 style={styles.statValue}>{formatDualCurrency(totalSaved)}</h3>
               <p style={styles.statLabel}>{t('goals.totalSaved')}</p>
             </div>
           </div>
           <div style={styles.statCard}>
-            <div style={styles.statIcon}>🎯</div>
+            <div style={styles.statIcon}></div>
             <div style={styles.statContent}>
-              <h3 style={styles.statValue}>{formatCurrency(totalTarget)}</h3>
+              <h3 style={styles.statValue}>{formatDualCurrency(totalTarget)}</h3>
               <p style={styles.statLabel}>{t('goals.totalTarget')}</p>
             </div>
           </div>
@@ -381,7 +381,7 @@ function GoalsPage() {
         </div>
       ) : goals.length === 0 ? (
         <div style={styles.emptyState}>
-          <div style={styles.emptyIcon}>🎯</div>
+          <div style={styles.emptyIcon}></div>
           <p style={styles.emptyText}>{t('goals.noGoals')}</p>
           <p style={styles.emptySubtext}>{t('goals.noGoalsSubtext')}</p>
           <p style={styles.emptyDescription}>{t('goals.noGoalsDescription')}</p>

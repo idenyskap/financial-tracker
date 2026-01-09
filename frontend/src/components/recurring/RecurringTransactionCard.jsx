@@ -4,7 +4,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 
 function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) {
   const styles = useThemedStyles(getStyles);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
 
   const getFrequencyLabel = (frequency) => {
@@ -72,11 +72,11 @@ function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) 
               color: transaction.type === 'INCOME' ? '#10b981' : '#ef4444',
             }}>
               {transaction.type === 'INCOME' ? '+' : '-'}
-              {formatCurrency(transaction.amount)}
+              {formatDualCurrency(transaction.amount)}
             </span>
             <div style={styles.frequencyInfo}>
               <span style={styles.frequency}>
-                📅 {getFrequencyLabel(transaction.frequency)} {getDayLabel()}
+                {getFrequencyLabel(transaction.frequency)} {getDayLabel()}
               </span>
             </div>
           </div>

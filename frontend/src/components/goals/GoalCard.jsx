@@ -5,7 +5,7 @@ import { useLanguage } from '../../hooks/useLanguage';
 
 function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
   const styles = useThemedStyles(getStyles);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
   const [showContribution, setShowContribution] = useState(false);
   const [contributionAmount, setContributionAmount] = useState('');
@@ -96,7 +96,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
               style={styles.primaryAction}
               title="Add/Withdraw funds"
             >
-              💰 {t('goals.addFunds')}
+              {t('goals.addFunds')}
             </button>
           )}
           {goal.status === 'PAUSED' && (
@@ -105,7 +105,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
               style={styles.primaryAction}
               title="Resume goal"
             >
-              ▶️ {t('goals.resume')}
+              {t('goals.resume')}
             </button>
           )}
         </div>
@@ -117,8 +117,8 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
 
       <div style={styles.progressSection}>
         <div style={styles.amounts}>
-          <span style={styles.currentAmount}>{formatCurrency(goal.currentAmount)}</span>
-          <span style={styles.targetAmount}>{t('goals.of')} {formatCurrency(goal.targetAmount)}</span>
+          <span style={styles.currentAmount}>{formatDualCurrency(goal.currentAmount)}</span>
+          <span style={styles.targetAmount}>{t('goals.of')} {formatDualCurrency(goal.targetAmount)}</span>
         </div>
 
         <div style={styles.progressBar}>
@@ -133,7 +133,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
 
         <div style={styles.progressStats}>
           <span>{progressPercentage.toFixed(1)}% {t('goals.complete')}</span>
-          <span>{formatCurrency(goal.remainingAmount)} {t('goals.toGo')}</span>
+          <span>{formatDualCurrency(goal.remainingAmount)} {t('goals.toGo')}</span>
         </div>
       </div>
 
@@ -190,19 +190,19 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
           <div style={styles.savingsGrid}>
             <div style={styles.savingsItem}>
               <span style={styles.savingsAmount}>
-                {formatCurrency(goal.requiredDailySaving)}
+                {formatDualCurrency(goal.requiredDailySaving)}
               </span>
               <span style={styles.savingsPeriod}>{t('goals.perDay')}</span>
             </div>
             <div style={styles.savingsItem}>
               <span style={styles.savingsAmount}>
-                {formatCurrency(goal.requiredWeeklySaving)}
+                {formatDualCurrency(goal.requiredWeeklySaving)}
               </span>
               <span style={styles.savingsPeriod}>{t('goals.perWeek')}</span>
             </div>
             <div style={styles.savingsItem}>
               <span style={styles.savingsAmount}>
-                {formatCurrency(goal.requiredMonthlySaving)}
+                {formatDualCurrency(goal.requiredMonthlySaving)}
               </span>
               <span style={styles.savingsPeriod}>{t('goals.perMonth')}</span>
             </div>
@@ -400,9 +400,9 @@ const getStyles = (theme) => ({
     justifyContent: 'center',
     gap: '0.375rem',
     padding: '0.625rem 1rem',
-    backgroundColor: theme.dangerBackground,
-    color: theme.danger,
-    border: `1px solid ${theme.dangerBorder}`,
+    backgroundColor: '#fef2f2',
+    color: '#dc2626',
+    border: '1px solid #fecaca',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '0.8rem',

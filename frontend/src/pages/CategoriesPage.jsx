@@ -209,7 +209,7 @@ function CategoriesPage() {
           <div style={styles.section}>
             <div style={styles.sectionHeader}>
               <h2 style={styles.sectionTitle}>
-                <span style={styles.sectionIcon}>💰</span>
+                <span style={styles.sectionIcon}></span>
                 {t('categories.incomeCategories')}
                 {incomeCategories.length > 0 && (
                   <span style={styles.badge}>{incomeCategories.length}</span>
@@ -219,7 +219,7 @@ function CategoriesPage() {
             
             {incomeCategories.length === 0 ? (
               <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>📊</div>
+                <div style={styles.emptyIcon}></div>
                 <p style={styles.emptyText}>{t('categories.noIncomeCategories')}</p>
                 <p style={styles.emptySubtext}>{t('categories.incomeCategoriesSubtext')}</p>
               </div>
@@ -242,14 +242,14 @@ function CategoriesPage() {
                             style={styles.editBtn}
                             title={t('categories.editTooltip')}
                           >
-                            ✏️
+                            ✏️ {t('common.edit')}
                           </button>
                           <button
                             onClick={() => handleDelete(category.id)}
                             style={styles.deleteBtn}
                             title={t('categories.deleteTooltip')}
                           >
-                            🗑️
+                            🗑️ {t('common.delete')}
                           </button>
                         </div>
                       </div>
@@ -264,7 +264,7 @@ function CategoriesPage() {
           <div style={styles.section}>
             <div style={styles.sectionHeader}>
               <h2 style={styles.sectionTitle}>
-                <span style={styles.sectionIcon}>💸</span>
+                <span style={styles.sectionIcon}></span>
                 {t('categories.expenseCategories')}
                 {expenseCategories.length > 0 && (
                   <span style={styles.badge}>{expenseCategories.length}</span>
@@ -274,7 +274,7 @@ function CategoriesPage() {
             
             {expenseCategories.length === 0 ? (
               <div style={styles.emptyState}>
-                <div style={styles.emptyIcon}>📊</div>
+                <div style={styles.emptyIcon}></div>
                 <p style={styles.emptyText}>{t('categories.noExpenseCategories')}</p>
                 <p style={styles.emptySubtext}>{t('categories.expenseCategoriesSubtext')}</p>
               </div>
@@ -297,14 +297,14 @@ function CategoriesPage() {
                             style={styles.editBtn}
                             title={t('categories.editTooltip')}
                           >
-                            ✏️
+                            ✏️ {t('common.edit')}
                           </button>
                           <button
                             onClick={() => handleDelete(category.id)}
                             style={styles.deleteBtn}
                             title={t('categories.deleteTooltip')}
                           >
-                            🗑️
+                            🗑️ {t('common.delete')}
                           </button>
                         </div>
                       </div>
@@ -615,28 +615,34 @@ const getStyles = (theme) => ({
     gap: '0.5rem',
   },
   editBtn: {
-    padding: '0.5rem',
+    padding: '0.5rem 0.75rem',
     backgroundColor: theme.backgroundSecondary,
     border: `1px solid ${theme.border}`,
     borderRadius: '6px',
     cursor: 'pointer',
-    fontSize: '0.875rem',
+    fontSize: '0.8rem',
+    fontWeight: '500',
+    color: theme.textSecondary,
     transition: 'all 0.2s ease',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: '0.25rem',
   },
   deleteBtn: {
-    padding: '0.5rem',
+    padding: '0.5rem 0.75rem',
     backgroundColor: '#fef2f2',
     border: '1px solid #fecaca',
     borderRadius: '6px',
     cursor: 'pointer',
-    fontSize: '0.875rem',
+    fontSize: '0.8rem',
+    fontWeight: '500',
+    color: '#dc2626',
     transition: 'all 0.2s ease',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: '0.25rem',
   },
 });
 

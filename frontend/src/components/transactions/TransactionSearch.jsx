@@ -244,7 +244,7 @@ const getStyles = (theme) => ({
   },
   filterButton: {
     padding: '0.75rem 1rem',
-    backgroundColor: theme.secondary,
+    backgroundColor: theme.primary,
     color: 'white',
     border: 'none',
     borderRadius: '4px',

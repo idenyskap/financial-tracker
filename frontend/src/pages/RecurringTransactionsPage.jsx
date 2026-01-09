@@ -246,28 +246,28 @@ function RecurringTransactionsPage() {
               </div>
               <div style={styles.templateGrid}>
                 <button type="button" onClick={() => setFormPreset('rent')} style={styles.templateButton}>
-                  <span style={styles.templateIcon}>🏠</span>
+                  <span style={styles.templateIcon}></span>
                   <div style={styles.templateContent}>
                     <span style={styles.templateName}>{t('recurring.monthlyRent')}</span>
                     <span style={styles.templateDesc}>{t('recurring.firstOfMonth')}</span>
                   </div>
                 </button>
                 <button type="button" onClick={() => setFormPreset('salary')} style={styles.templateButton}>
-                  <span style={styles.templateIcon}>💰</span>
+                  <span style={styles.templateIcon}></span>
                   <div style={styles.templateContent}>
                     <span style={styles.templateName}>{t('recurring.monthlySalary')}</span>
                     <span style={styles.templateDesc}>{t('recurring.twentyFifthOfMonth')}</span>
                   </div>
                 </button>
                 <button type="button" onClick={() => setFormPreset('weekly')} style={styles.templateButton}>
-                  <span style={styles.templateIcon}>🛒</span>
+                  <span style={styles.templateIcon}></span>
                   <div style={styles.templateContent}>
                     <span style={styles.templateName}>{t('recurring.weeklyShopping')}</span>
                     <span style={styles.templateDesc}>{t('recurring.everySaturday')}</span>
                   </div>
                 </button>
                 <button type="button" onClick={() => setFormPreset('subscription')} style={styles.templateButton}>
-                  <span style={styles.templateIcon}>📺</span>
+                  <span style={styles.templateIcon}></span>
                   <div style={styles.templateContent}>
                     <span style={styles.templateName}>{t('recurring.subscription')}</span>
                     <span style={styles.templateDesc}>{t('recurring.fifteenthOfMonth')}</span>
@@ -413,7 +413,7 @@ function RecurringTransactionsPage() {
 
             {getNextExecutionPreview() && (
               <div style={styles.previewSection}>
-                <div style={styles.previewIcon}>💡</div>
+                <div style={styles.previewIcon}></div>
                 <div style={styles.previewContent}>
                   <p style={styles.previewTitle}>{t('recurring.schedulePreview')}</p>
                   <p style={styles.previewText}>{getNextExecutionPreview()}</p>
@@ -466,7 +466,7 @@ function RecurringTransactionsPage() {
         </div>
       ) : transactions.length === 0 ? (
         <div style={styles.emptyState}>
-          <div style={styles.emptyIcon}>🔄</div>
+          <div style={styles.emptyIcon}></div>
           <p style={styles.emptyText}>{t('recurring.noTransactions')}</p>
           <p style={styles.emptySubtext}>{t('recurring.noTransactionsSubtext')}</p>
           <p style={styles.emptyDescription}>{t('recurring.noTransactionsDescription')}</p>
@@ -475,7 +475,7 @@ function RecurringTransactionsPage() {
         <div style={styles.transactionsSection}>
           <div style={styles.sectionHeader}>
             <h3 style={styles.sectionTitle}>
-              <span style={styles.sectionIcon}>🔄</span>
+              <span style={styles.sectionIcon}></span>
               {t('recurring.title')}
               <span style={styles.badge}>{transactions.length}</span>
             </h3>

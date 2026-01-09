@@ -35,6 +35,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -50,6 +51,16 @@ public class TransactionService {
   private final BudgetService budgetService;
   private final BudgetRepository budgetRepository;
   private final EmailService emailService;
+
+  private static final String[] CATEGORY_COLORS = {
+    "#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6",
+    "#1abc9c", "#34495e", "#e67e22", "#95a5a6", "#16a085"
+  };
+  private static final Random random = new Random();
+
+  private String getRandomCategoryColor() {
+    return CATEGORY_COLORS[random.nextInt(CATEGORY_COLORS.length)];
+  }
 
   @Transactional(readOnly = true)
   public List<TransactionDTO> getTransactionsByUser(User user) {
@@ -256,6 +267,28 @@ public class TransactionService {
     transactionRepository.delete(transaction);
 
     log.info("Successfully deleted transaction ID: {} for user: {}", id, user.getEmail());
+  }
+
+  public int deleteTransactionsBulk(List<Long> ids, User user) {
+    log.info("Bulk deleting {} transactions for user: {}", ids.size(), user.getEmail());
+
+    int deletedCount = 0;
+    for (Long id : ids) {
+      try {
+        Transaction transaction = transactionRepository.findByIdAndUser(id, user)
+          .orElse(null);
+        if (transaction != null) {
+          transactionRepository.delete(transaction);
+          deletedCount++;
+        }
+      } catch (Exception e) {
+        log.warn("Failed to delete transaction ID: {} for user: {}", id, user.getEmail());
+      }
+    }
+
+    log.info("Successfully bulk deleted {} of {} transactions for user: {}",
+      deletedCount, ids.size(), user.getEmail());
+    return deletedCount;
   }
 
   @Transactional(readOnly = true)
@@ -654,23 +687,33 @@ public class TransactionService {
   }
 
   private static final List<DateTimeFormatter> DATE_FORMATTERS = List.of(
-    DateTimeFormatter.ISO_LOCAL_DATE,                    // 2026-01-15
-    DateTimeFormatter.ofPattern("M/d/yyyy"),             // 1/15/2026
-    DateTimeFormatter.ofPattern("MM/dd/yyyy"),           // 01/15/2026
-    DateTimeFormatter.ofPattern("d/M/yyyy"),             // 15/1/2026
-    DateTimeFormatter.ofPattern("dd/MM/yyyy"),           // 15/01/2026
-    DateTimeFormatter.ofPattern("yyyy/MM/dd"),           // 2026/01/15
-    DateTimeFormatter.ofPattern("d.M.yyyy"),             // 15.1.2026
-    DateTimeFormatter.ofPattern("dd.MM.yyyy"),           // 15.01.2026
-    DateTimeFormatter.ofPattern("d-M-yyyy"),             // 15-1-2026
-    DateTimeFormatter.ofPattern("dd-MM-yyyy")            // 15-01-2026
+    DateTimeFormatter.ISO_LOCAL_DATE,                                    // 2026-01-15
+    DateTimeFormatter.ofPattern("M/d/yyyy"),                             // 1/15/2026
+    DateTimeFormatter.ofPattern("MM/dd/yyyy"),                           // 01/15/2026
+    DateTimeFormatter.ofPattern("d/M/yyyy"),                             // 15/1/2026
+    DateTimeFormatter.ofPattern("dd/MM/yyyy"),                           // 15/01/2026
+    DateTimeFormatter.ofPattern("yyyy/MM/dd"),                           // 2026/01/15
+    DateTimeFormatter.ofPattern("d.M.yyyy"),                             // 15.1.2026
+    DateTimeFormatter.ofPattern("dd.MM.yyyy"),                           // 15.01.2026
+    DateTimeFormatter.ofPattern("d-M-yyyy"),                             // 15-1-2026
+    DateTimeFormatter.ofPattern("dd-MM-yyyy"),                           // 15-01-2026
+    DateTimeFormatter.ofPattern("MMM d yyyy", java.util.Locale.ENGLISH), // Jan 5 2024
+    DateTimeFormatter.ofPattern("MMM dd yyyy", java.util.Locale.ENGLISH),// Jan 05 2024
+    DateTimeFormatter.ofPattern("d MMM yyyy", java.util.Locale.ENGLISH), // 5 Jan 2024
+    DateTimeFormatter.ofPattern("dd MMM yyyy", java.util.Locale.ENGLISH),// 05 Jan 2024
+    DateTimeFormatter.ofPattern("MMMM d, yyyy", java.util.Locale.ENGLISH),// January 5, 2024
+    DateTimeFormatter.ofPattern("MMM d, yyyy", java.util.Locale.ENGLISH) // Jan 5, 2024
   );
 
   private LocalDate parseDate(String dateStr) {
     String trimmed = dateStr.trim();
     for (DateTimeFormatter formatter : DATE_FORMATTERS) {
       try {
-        return LocalDate.parse(trimmed, formatter);
+        LocalDate date = LocalDate.parse(trimmed, formatter);
+        if (date.isAfter(LocalDate.now())) {
+          throw new IllegalArgumentException("Date cannot be in the future: " + trimmed);
+        }
+        return date;
       } catch (DateTimeParseException e) {
       }
     }
@@ -680,7 +723,6 @@ public class TransactionService {
   private BigDecimal parseAmount(String amountStr) {
     String cleaned = amountStr.trim();
 
-    // Remove currency symbols and whitespace
     cleaned = cleaned.replaceAll("[€$£₴₽¥\\s]", "");
 
     if (cleaned.startsWith("(") && cleaned.endsWith(")")) {
@@ -707,7 +749,12 @@ public class TransactionService {
   }
 
   private TransactionDTO parseCsvLine(String line, int rowNumber, User user) {
-    String[] values = line.split(",");
+    String[] values;
+    if (line.contains("\t")) {
+      values = line.split("\t");
+    } else {
+      values = line.split(",");
+    }
 
     if (values.length < 4) {
       throw new IllegalArgumentException("Invalid format. Expected: date,amount,type,category,description");
@@ -727,8 +774,19 @@ public class TransactionService {
       dto.setType(type);
 
       String categoryName = values[3].trim();
+      if (categoryName.isEmpty()) {
+        throw new IllegalArgumentException("Category is required");
+      }
+
       Category category = categoryRepository.findByNameAndUser(categoryName, user)
-        .orElseThrow(() -> new IllegalArgumentException("Category '" + categoryName + "' not found"));
+        .orElseGet(() -> {
+          Category newCategory = new Category();
+          newCategory.setName(categoryName);
+          newCategory.setUser(user);
+          newCategory.setType(type.equals("INCOME") ? TransactionType.INCOME : TransactionType.EXPENSE);
+          newCategory.setColor(getRandomCategoryColor());
+          return categoryRepository.save(newCategory);
+        });
       dto.setCategoryId(category.getId());
 
       if (values.length > 4) {
@@ -737,7 +795,7 @@ public class TransactionService {
 
       return dto;
     } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException("Invalid date format. Supported: YYYY-MM-DD, M/d/yyyy, dd.MM.yyyy, etc.");
+      throw new IllegalArgumentException("Invalid date format. Supported: YYYY-MM-DD, M/d/yyyy, MMM d yyyy, etc.");
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException("Invalid amount format");
     }
@@ -869,8 +927,19 @@ public class TransactionService {
         throw new IllegalArgumentException("Category is required");
       }
       String categoryName = getCellStringValue(categoryCell).trim();
+      if (categoryName.isEmpty()) {
+        throw new IllegalArgumentException("Category is required");
+      }
+
       Category category = categoryRepository.findByNameAndUser(categoryName, user)
-        .orElseThrow(() -> new IllegalArgumentException("Category '" + categoryName + "' not found"));
+        .orElseGet(() -> {
+          Category newCategory = new Category();
+          newCategory.setName(categoryName);
+          newCategory.setUser(user);
+          newCategory.setType(type.equals("INCOME") ? TransactionType.INCOME : TransactionType.EXPENSE);
+          newCategory.setColor(getRandomCategoryColor());
+          return categoryRepository.save(newCategory);
+        });
       dto.setCategoryId(category.getId());
 
       Cell descriptionCell = row.getCell(4);

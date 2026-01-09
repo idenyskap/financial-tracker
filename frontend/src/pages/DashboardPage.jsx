@@ -12,7 +12,7 @@ import { useLanguage } from '../hooks/useLanguage';
 
 function DashboardPage() {
   const styles = useThemedStyles(getStyles);
-  const { formatCurrency } = useCurrency();
+  const { formatCurrency, formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard'],
@@ -36,7 +36,7 @@ function DashboardPage() {
   if (error) {
     return (
       <div style={styles.error}>
-        <span style={styles.errorIcon}>⚠️</span>
+        <span style={styles.errorIcon}></span>
         <p>{t('dashboard.errorMessage')}</p>
       </div>
     );
@@ -66,24 +66,24 @@ function DashboardPage() {
           <div style={styles.statCard}>
             <div style={styles.statHeader}>
               <div style={styles.statInfo}>
-                <span style={styles.statIcon}>💰</span>
+                <span style={styles.statIcon}></span>
                 <span style={styles.statTitle}>{t('dashboard.currentBalance')}</span>
               </div>
             </div>
             <div style={styles.statContent}>
-              <span style={styles.statValue}>{formatCurrency(dashboard?.currentBalance)}</span>
+              <span style={styles.statValue}>{formatDualCurrency(dashboard?.currentBalance)}</span>
             </div>
           </div>
 
           <div style={styles.statCard}>
             <div style={styles.statHeader}>
               <div style={styles.statInfo}>
-                <span style={styles.statIcon}>📈</span>
+                <span style={styles.statIcon}></span>
                 <span style={styles.statTitle}>{t('dashboard.monthlyIncome')}</span>
               </div>
             </div>
             <div style={styles.statContent}>
-              <span style={{...styles.statValue, color: '#10b981'}}>{formatCurrency(dashboard?.monthlyIncome)}</span>
+              <span style={{...styles.statValue, color: '#10b981'}}>{formatDualCurrency(dashboard?.monthlyIncome)}</span>
               <span style={styles.statChange}>
                 {formatPercent(dashboard?.incomeChangePercent)} {t('dashboard.fromLastMonth')}
               </span>
@@ -93,12 +93,12 @@ function DashboardPage() {
           <div style={styles.statCard}>
             <div style={styles.statHeader}>
               <div style={styles.statInfo}>
-                <span style={styles.statIcon}>📉</span>
+                <span style={styles.statIcon}></span>
                 <span style={styles.statTitle}>{t('dashboard.monthlyExpenses')}</span>
               </div>
             </div>
             <div style={styles.statContent}>
-              <span style={{...styles.statValue, color: '#ef4444'}}>{formatCurrency(dashboard?.monthlyExpense)}</span>
+              <span style={{...styles.statValue, color: '#ef4444'}}>{formatDualCurrency(dashboard?.monthlyExpense)}</span>
               <span style={styles.statChange}>
                 {formatPercent(dashboard?.expenseChangePercent)} {t('dashboard.fromLastMonth')}
               </span>
@@ -108,7 +108,7 @@ function DashboardPage() {
           <div style={styles.statCard}>
             <div style={styles.statHeader}>
               <div style={styles.statInfo}>
-                <span style={styles.statIcon}>📊</span>
+                <span style={styles.statIcon}></span>
                 <span style={styles.statTitle}>{t('dashboard.monthlyBalance')}</span>
               </div>
             </div>
@@ -117,7 +117,7 @@ function DashboardPage() {
                 ...styles.statValue, 
                 color: dashboard?.monthlyBalance >= 0 ? '#10b981' : '#ef4444'
               }}>
-                {formatCurrency(dashboard?.monthlyBalance)}
+                {formatDualCurrency(dashboard?.monthlyBalance)}
               </span>
             </div>
           </div>
@@ -128,7 +128,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}>💳</span>
+            <span style={styles.cardIcon}></span>
             {t('dashboard.recentTransactions')}
           </h3>
         </div>
@@ -161,10 +161,10 @@ function DashboardPage() {
                         color: transaction.type === 'INCOME' ? '#10b981' : '#ef4444'
                       }}>
                         {transaction.type === 'INCOME' ? '+' : '-'}
-                        {formatCurrency(transaction.amount)}
+                        {formatDualCurrency(transaction.amount)}
                       </span>
                       <span style={styles.transactionType}>
-                        {transaction.type === 'INCOME' ? '💰' : '💸'}
+                        {transaction.type === 'INCOME' ? '' : ''}
                       </span>
                     </div>
                   </div>
@@ -173,7 +173,7 @@ function DashboardPage() {
             </div>
           ) : (
             <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>💳</div>
+              <div style={styles.emptyIcon}></div>
               <p style={styles.emptyText}>{t('dashboard.noRecentTransactions')}</p>
               <p style={styles.emptySubtext}>{t('dashboard.recentTransactionsSubtext')}</p>
             </div>
@@ -185,7 +185,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}>📋</span>
+            <span style={styles.cardIcon}></span>
             {t('dashboard.topExpenseCategories')}
           </h3>
         </div>
@@ -205,7 +205,7 @@ function DashboardPage() {
                   </div>
                   <div style={styles.categoryStats}>
                     <span style={styles.categoryAmount}>
-                      {formatCurrency(category.totalAmount)}
+                      {formatDualCurrency(category.totalAmount)}
                     </span>
                     <span style={styles.categoryPercent}>
                       {category.percentage?.toFixed(1)}%
@@ -216,7 +216,7 @@ function DashboardPage() {
             </div>
           ) : (
             <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}>📋</div>
+              <div style={styles.emptyIcon}></div>
               <p style={styles.emptyText}>{t('dashboard.noExpenseCategories')}</p>
               <p style={styles.emptySubtext}>{t('dashboard.expenseCategoriesSubtext')}</p>
             </div>
@@ -228,7 +228,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}>📊</span>
+            <span style={styles.cardIcon}></span>
             {t('dashboard.financialAnalytics')}
           </h3>
         </div>
@@ -241,7 +241,7 @@ function DashboardPage() {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}>🥧</span>
+              <span style={styles.cardIcon}></span>
               {t('dashboard.expenseDistribution')}
             </h3>
           </div>
@@ -259,7 +259,7 @@ function DashboardPage() {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}>📈</span>
+              <span style={styles.cardIcon}></span>
               {t('analytics.categoryMonthlyTrends')}
             </h3>
           </div>
@@ -273,7 +273,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}>🎯</span>
+            <span style={styles.cardIcon}></span>
             {t('dashboard.financialGoals')}
           </h3>
         </div>

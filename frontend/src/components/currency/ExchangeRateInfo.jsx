@@ -68,7 +68,7 @@ function ExchangeRateInfo() {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <span style={styles.icon}>📊</span>
+        <span style={styles.icon}></span>
         <h4 style={styles.title}>{t('profile.currentExchangeRate')}</h4>
       </div>
 
@@ -105,7 +105,7 @@ function ExchangeRateInfo() {
         </div>
 
         <div style={styles.note}>
-          <span style={styles.noteIcon}>ℹ️</span>
+          <span style={styles.noteIcon}></span>
           <span style={styles.noteText}>
             {t('profile.rateNote')}
           </span>
