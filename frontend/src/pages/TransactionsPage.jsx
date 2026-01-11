@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Pencil, Trash2, Download } from 'lucide-react';
 import { transactionService } from '../services/transactionService';
 import { categoryService } from '../services/categoryService';
 import { savedSearchService } from '../services/savedSearchService';
@@ -390,7 +391,7 @@ function TransactionsPage() {
         <div style={styles.headerButtons}>
           <ImportCSV onImportComplete={() => queryClient.invalidateQueries(['transactions'])} />
           <button onClick={handleExportCSV} style={styles.exportButton}>
-            <span style={styles.buttonIcon}>📥</span>
+            <span style={styles.buttonIcon}><Download size={16} /></span>
             {t('transactions.exportCSV')}
           </button>
           <button onClick={() => setShowForm(!showForm)} style={styles.addButton}>
@@ -563,7 +564,7 @@ function TransactionsPage() {
                 disabled={bulkDeleteMutation.isPending}
                 style={styles.bulkDeleteBtn}
               >
-                🗑️ {bulkDeleteMutation.isPending
+                <Trash2 size={14} /> {bulkDeleteMutation.isPending
                   ? t('common.loading')
                   : t('transactions.deleteSelected', { count: selectedIds.size })}
               </button>
@@ -621,14 +622,14 @@ function TransactionsPage() {
                         style={styles.editBtn}
                         title={t('common.edit')}
                       >
-                        ✏️ {t('common.edit')}
+                        <Pencil size={14} /> {t('common.edit')}
                       </button>
                       <button
                         onClick={() => handleDelete(tx.id)}
                         style={styles.deleteBtn}
                         title={t('common.delete')}
                       >
-                        🗑️ {t('common.delete')}
+                        <Trash2 size={14} /> {t('common.delete')}
                       </button>
                     </div>
                   </div>

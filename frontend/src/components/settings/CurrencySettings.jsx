@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Save } from 'lucide-react';
 import api from '../../services/api';
 import { toast } from 'sonner';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -180,7 +181,7 @@ const CurrencySettings = () => {
             cursor: updateMutation.isPending ? 'not-allowed' : 'pointer'
           }}
         >
-          <span style={styles.saveButtonIcon}>💾</span>
+          <span style={styles.saveButtonIcon}><Save size={16} /></span>
           {updateMutation.isPending ? t('profile.savingChanges') : t('profile.saveCurrencySettings')}
         </button>
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Pencil, Trash2, Pause, Play } from 'lucide-react';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { useCurrency } from '../../hooks/useCurrency';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -105,7 +106,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
               style={styles.primaryAction}
               title="Resume goal"
             >
-              {t('goals.resume')}
+              <Play size={14} /> {t('goals.resume')}
             </button>
           )}
         </div>
@@ -220,21 +221,21 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
                 style={styles.secondaryButton}
                 title="Pause goal"
               >
-                ⏸️ {t('goals.pause')}
+                <Pause size={14} /> {t('goals.pause')}
               </button>
               <button
                 onClick={() => onEdit(goal)}
                 style={styles.secondaryButton}
                 title="Edit goal"
               >
-                ✏️ {t('common.edit')}
+                <Pencil size={14} /> {t('common.edit')}
               </button>
               <button
                 onClick={() => onDelete(goal.id)}
                 style={styles.dangerButton}
                 title="Delete goal"
               >
-                🗑️ {t('common.delete')}
+                <Trash2 size={14} /> {t('common.delete')}
               </button>
             </>
           )}
@@ -245,14 +246,14 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
                 style={styles.secondaryButton}
                 title="Edit goal"
               >
-                ✏️ {t('common.edit')}
+                <Pencil size={14} /> {t('common.edit')}
               </button>
               <button
                 onClick={() => onDelete(goal.id)}
                 style={styles.dangerButton}
                 title="Delete goal"
               >
-                🗑️ {t('common.delete')}
+                <Trash2 size={14} /> {t('common.delete')}
               </button>
             </>
           )}
@@ -262,7 +263,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
               style={styles.dangerButton}
               title="Delete goal"
             >
-              🗑️ Delete
+              <Trash2 size={14} /> Delete
             </button>
           )}
         </div>

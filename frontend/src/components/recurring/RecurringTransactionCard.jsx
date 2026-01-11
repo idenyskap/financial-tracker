@@ -1,3 +1,4 @@
+import { Pencil, Trash2 } from 'lucide-react';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { useCurrency } from '../../hooks/useCurrency';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -125,14 +126,14 @@ function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) 
             style={styles.editButton}
             title="Edit transaction"
           >
-            ✏️ {t('common.edit')}
+            <Pencil size={14} /> {t('common.edit')}
           </button>
           <button
             onClick={() => onDelete(transaction.id)}
             style={styles.deleteButton}
             title="Delete transaction"
           >
-            🗑️ {t('common.delete')}
+            <Trash2 size={14} /> {t('common.delete')}
           </button>
         </div>
       </div>

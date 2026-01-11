@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Pencil, Trash2 } from 'lucide-react';
 import { budgetService } from '../services/budgetService';
 import { categoryService } from '../services/categoryService';
 import BudgetProgress from '../components/budgets/BudgetProgress';
@@ -270,14 +271,14 @@ function BudgetsPage() {
                       style={styles.editBtn}
                       title={t('budgets.editTooltip')}
                     >
-                      ✏️ {t('budgets.editLabel')}
+                      <Pencil size={14} /> {t('budgets.editLabel')}
                     </button>
                     <button
                       onClick={() => handleDelete(budget.id)}
                       style={styles.deleteBtn}
                       title={t('budgets.deleteTooltip')}
                     >
-                      🗑️ {t('budgets.deleteLabel')}
+                      <Trash2 size={14} /> {t('budgets.deleteLabel')}
                     </button>
                   </div>
                 </div>

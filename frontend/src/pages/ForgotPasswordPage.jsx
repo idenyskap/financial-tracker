@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Mail } from 'lucide-react';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 import api from '../services/api';
 import { toast } from 'sonner';
@@ -29,7 +30,7 @@ function ForgotPasswordPage() {
     return (
       <div style={styles.container}>
         <div style={styles.card}>
-          <div style={styles.successIcon}>📧</div>
+          <div style={styles.successIcon}><Mail size={48} /></div>
           <h2 style={styles.title}>Check Your Email</h2>
           <p style={styles.text}>
             If an account exists with the email <strong>{email}</strong>,

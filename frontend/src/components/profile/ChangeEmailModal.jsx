@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import api from '../../services/api';
 import { toast } from 'sonner';
@@ -66,7 +67,7 @@ function ChangeEmailModal({ currentEmail, onClose, onSuccess }) {
         <div style={styles.header}>
           <h2 style={styles.title}>Change Email Address</h2>
           <button onClick={onClose} style={styles.closeButton}>
-            ✕
+            <X size={20} />
           </button>
         </div>
 

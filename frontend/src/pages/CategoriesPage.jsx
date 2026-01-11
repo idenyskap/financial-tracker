@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Pencil, Trash2 } from 'lucide-react';
 import { categoryService } from '../services/categoryService';
 import { toast } from 'sonner';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -242,14 +243,14 @@ function CategoriesPage() {
                             style={styles.editBtn}
                             title={t('categories.editTooltip')}
                           >
-                            ✏️ {t('common.edit')}
+                            <Pencil size={14} /> {t('common.edit')}
                           </button>
                           <button
                             onClick={() => handleDelete(category.id)}
                             style={styles.deleteBtn}
                             title={t('categories.deleteTooltip')}
                           >
-                            🗑️ {t('common.delete')}
+                            <Trash2 size={14} /> {t('common.delete')}
                           </button>
                         </div>
                       </div>
@@ -297,14 +298,14 @@ function CategoriesPage() {
                             style={styles.editBtn}
                             title={t('categories.editTooltip')}
                           >
-                            ✏️ {t('common.edit')}
+                            <Pencil size={14} /> {t('common.edit')}
                           </button>
                           <button
                             onClick={() => handleDelete(category.id)}
                             style={styles.deleteBtn}
                             title={t('categories.deleteTooltip')}
                           >
-                            🗑️ {t('common.delete')}
+                            <Trash2 size={14} /> {t('common.delete')}
                           </button>
                         </div>
                       </div>

@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { AuthContext } from '../contexts/contexts';
 import { toast } from 'sonner';
 
@@ -7,6 +8,7 @@ function LoginForm() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -56,15 +58,24 @@ function LoginForm() {
             required
             style={styles.input}
           />
-          <input
-            name="password"
-            placeholder="Password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
+          <div style={styles.passwordContainer}>
+            <input
+              name="password"
+              placeholder="Password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              required
+              style={styles.passwordInput}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={styles.eyeButton}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           <button
             type="submit"
             disabled={loading}
@@ -114,6 +125,34 @@ const styles = {
     borderRadius: '4px',
     outline: 'none',
     transition: 'border-color 0.2s',
+  },
+  passwordContainer: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  passwordInput: {
+    padding: '0.75rem',
+    paddingRight: '2.5rem',
+    fontSize: '1rem',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+    width: '100%',
+    boxSizing: 'border-box',
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: '0.5rem',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '1.2rem',
+    padding: '0.25rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     padding: '0.75rem',

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 import TwoFactorInput from '../components/auth/TwoFactorInput';
@@ -18,6 +19,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [requires2FA, setRequires2FA] = useState(false);
   const [tempCredentials, setTempCredentials] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handle2FASubmit = async (code) => {
     setLoading(true);
@@ -109,16 +111,25 @@ const LoginPage = () => {
           </div>
 
           <div style={styles.inputGroup}>
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              style={styles.input}
-              autoComplete="current-password"
-              required
-            />
+            <div style={styles.passwordContainer}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                style={styles.passwordInput}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.eyeButton}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <div style={styles.forgotLink}>
@@ -200,6 +211,36 @@ const getStyles = (theme, { isMobile } = {}) => ({
     fontSize: '16px',
     outline: 'none',
     transition: 'border-color 0.2s',
+  },
+  passwordContainer: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  passwordInput: {
+    width: '100%',
+    padding: '12px',
+    paddingRight: '45px',
+    borderRadius: '8px',
+    border: `1px solid ${theme.border}`,
+    backgroundColor: theme.background,
+    color: theme.text,
+    fontSize: '16px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+    boxSizing: 'border-box',
+  },
+  eyeButton: {
+    position: 'absolute',
+    right: '10px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.textSecondary,
   },
   forgotLink: {
     textAlign: 'right',

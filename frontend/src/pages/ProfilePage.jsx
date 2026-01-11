@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { User, Lock, Mail, Shield, KeyRound, Globe } from 'lucide-react';
 import api from '../services/api';
 import { toast } from 'sonner';
 import { useThemedStyles } from '../hooks/useThemedStyles';
@@ -74,10 +75,10 @@ const ProfilePage = () => {
   });
 
   const tabs = [
-    { id: 'profile', label: t('profile.tabProfile'), icon: '👤' },
-    { id: 'security', label: t('profile.tabSecurity'), icon: '🔒' },
-    { id: 'notifications', label: t('profile.tabNotifications'), icon: '📧' },
-    { id: 'currency', label: t('profile.tabCurrency'), icon: '🌍' },
+    { id: 'profile', label: t('profile.tabProfile'), icon: <User size={16} /> },
+    { id: 'security', label: t('profile.tabSecurity'), icon: <Lock size={16} /> },
+    { id: 'notifications', label: t('profile.tabNotifications'), icon: <Mail size={16} /> },
+    { id: 'currency', label: t('profile.tabCurrency'), icon: <Globe size={16} /> },
   ];
 
   if (isLoading) {
@@ -122,7 +123,7 @@ const ProfilePage = () => {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}>👤</span>
+              <span style={styles.cardIcon}><User size={20} /></span>
               {t('profile.profileInformation')}
             </h3>
           </div>
@@ -173,7 +174,7 @@ const ProfilePage = () => {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}>📧</span>
+              <span style={styles.cardIcon}><Mail size={20} /></span>
               {t('profile.notificationSettings')}
             </h3>
           </div>
@@ -188,7 +189,7 @@ const ProfilePage = () => {
           <div style={styles.contentCard}>
             <div style={styles.cardHeader}>
               <h3 style={styles.cardTitle}>
-                <span style={styles.cardIcon}>🌍</span>
+                <span style={styles.cardIcon}><Globe size={20} /></span>
                 {t('profile.currencySettings')}
               </h3>
             </div>
@@ -217,7 +218,7 @@ const ProfilePage = () => {
             <div style={styles.cardHeader}>
               <div style={styles.cardTitleSection}>
                 <h3 style={styles.cardTitle}>
-                  <span style={styles.cardIcon}>🛡️</span>
+                  <span style={styles.cardIcon}><Shield size={20} /></span>
                   {t('profile.twoFactorAuth')}
                 </h3>
                 <p style={styles.cardSubtitle}>
@@ -263,7 +264,7 @@ const ProfilePage = () => {
           <div style={styles.contentCard}>
             <div style={styles.cardHeader}>
               <h3 style={styles.cardTitle}>
-                <span style={styles.cardIcon}>🔑</span>
+                <span style={styles.cardIcon}><KeyRound size={20} /></span>
                 {t('profile.passwordManagement')}
               </h3>
               <p style={styles.cardSubtitle}>
