@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 import { useLanguage } from '../hooks/useLanguage';
-import { CheckCircleIcon, XCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import api from '../services/api';
 import AuthHeader from '../components/auth/AuthHeader';
 
@@ -164,19 +164,16 @@ const RegisterPage = () => {
         <div style={styles.card}>
           <div style={styles.successContainer}>
             <div style={styles.successIconWrapper}>
-              <EnvelopeIcon style={styles.successIcon} />
+              <CheckCircleIcon style={styles.successIcon} />
             </div>
             <h2 style={styles.successTitle}>
-              {t('register.checkYourEmail') || 'Check Your Email'}
+              {t('register.registrationComplete') || 'Registration Successful!'}
             </h2>
             <p style={styles.successMessage}>
-              {t('register.confirmationEmailSent') ||
-                `We've sent a confirmation email to`}
+              {t('register.accountCreated') || 'Your account has been created successfully.'}
             </p>
-            <p style={styles.emailHighlight}>{formData.email}</p>
             <p style={styles.successSubtext}>
-              {t('register.clickLinkToVerify') ||
-                'Please click the link in the email to verify your account and complete registration.'}
+              {t('register.canNowLogin') || 'You can now sign in with your email and password.'}
             </p>
 
             <div style={styles.successActions}>
@@ -190,16 +187,6 @@ const RegisterPage = () => {
                 {t('register.backToHome') || 'Back to Home'}
               </Link>
             </div>
-
-            <p style={styles.resendText}>
-              {t('register.didntReceiveEmail') || "Didn't receive the email?"}{' '}
-              <button
-                style={styles.resendLink}
-                onClick={() => toast.info(t('register.checkSpam') || 'Please check your spam folder')}
-              >
-                {t('register.resendEmail') || 'Check spam folder'}
-              </button>
-            </p>
           </div>
         </div>
       </div>

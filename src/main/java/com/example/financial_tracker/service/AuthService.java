@@ -57,12 +57,8 @@ public class AuthService {
       .email(email)
       .password(passwordEncoder.encode(request.getPassword()))
       .role(Role.USER)
-      .emailVerified(false)
+      .emailVerified(true) // Email verification disabled for now. Auto verify on registration
       .build();
-
-    String verificationToken = tokenService.generateToken();
-    user.setVerificationToken(verificationToken);
-    user.setVerificationTokenExpiresAt(tokenService.getExpiryDate());
 
     User savedUser = userRepository.save(user);
     log.info("Successfully registered new user - ID: {}, Email: {}, Name: '{}'",
@@ -80,8 +76,6 @@ public class AuthService {
 
     notificationSettingsRepository.save(settings);
     log.info("Created notification settings for new user: {}", savedUser.getEmail());
-
-    sendVerificationEmail(savedUser);
 
     String token = jwtService.generateToken(savedUser);
     log.debug("Generated JWT token for new user: {}", email);

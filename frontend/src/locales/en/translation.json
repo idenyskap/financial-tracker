@@ -115,13 +115,11 @@
     "registrationSuccess": "Registration successful!",
     "registrationFailed": "Registration failed",
     "networkError": "Network error. Please try again.",
-    "checkYourEmail": "Check Your Email",
-    "confirmationEmailSent": "We've sent a confirmation email to",
-    "clickLinkToVerify": "Please click the link in the email to verify your account and complete registration.",
+    "registrationComplete": "Registration Successful!",
+    "accountCreated": "Your account has been created successfully.",
+    "canNowLogin": "You can now sign in with your email and password.",
     "goToLogin": "Go to Login",
-    "didntReceiveEmail": "Didn't receive the email?",
-    "resendEmail": "Check spam folder",
-    "checkSpam": "Please check your spam folder"
+    "backToHome": "Back to Home"
   },
   "dashboard": {
     "title": "Dashboard",
