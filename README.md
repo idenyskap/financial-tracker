@@ -98,8 +98,8 @@ A comprehensive personal finance management application built with Spring Boot a
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/idenyskap/finantial_tracker.git
-   cd finantial_tracker
+   git clone https://github.com/idenyskap/financial-tracker.git
+   cd financial-tracker
    ```
 
 2. Start PostgreSQL database
