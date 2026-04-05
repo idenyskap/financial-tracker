@@ -12,6 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build backend
+        run: mvn clean package -DskipTests
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,13 +34,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deploy source code to EC2
+      - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "src,pom.xml,Dockerfile,frontend/dist/*"
+          source: "target/financial_tracker-0.0.1-SNAPSHOT.jar,frontend/dist/*,Dockerfile"
           target: "/home/ubuntu/deploy"
 
       - name: Build Docker image and restart
@@ -40,9 +49,18 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          command_timeout: 10m
           script: |
             cd /home/ubuntu/deploy
-            docker build -t financial-tracker .
+            cp target/financial_tracker-0.0.1-SNAPSHOT.jar app.jar
+            cat > Dockerfile.prod << 'EOF'
+            FROM eclipse-temurin:17-jre
+            WORKDIR /app
+            COPY app.jar app.jar
+            EXPOSE 8080
+            ENTRYPOINT ["java", "-jar", "app.jar"]
+            EOF
+            docker build -t financial-tracker -f Dockerfile.prod .
             docker stop financial-tracker || true
             docker rm financial-tracker || true
             docker run -d --name financial-tracker --restart unless-stopped --network host -e SPRING_PROFILES_ACTIVE=prod -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/financial_tracker -e SPRING_DATASOURCE_USERNAME=financial -e SPRING_DATASOURCE_PASSWORD=${{ secrets.DB_PASSWORD }} -e JWT_SECRET=${{ secrets.JWT_SECRET }} -e CORS_ORIGIN=http://13.48.198.125 -e FRONTEND_URL=http://13.48.198.125 -e MAIL_USERNAME=${{ secrets.MAIL_USERNAME }} -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} financial-tracker
