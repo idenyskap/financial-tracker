@@ -205,7 +205,25 @@ npm run lint
 
 ## Deployment
 
-### Production Build
+### Infrastructure
+
+The application is deployed on **AWS EC2** (t3.micro, Ubuntu 24.04):
+- **Nginx** — reverse proxy, serves frontend static files
+- **Spring Boot** — backend runs as a systemd service on port 8080
+- **PostgreSQL 16** — database running locally on the same instance
+- **Elastic IP** — static public IP address
+
+### CI/CD
+
+Automated deployment via **GitHub Actions**. On every push to `main`:
+1. Builds the backend JAR (Maven)
+2. Builds the frontend (Vite)
+3. Copies artifacts to EC2 via SCP
+4. Restarts the backend service
+
+Workflow: `.github/workflows/deploy.yml`
+
+### Manual Deployment
 
 1. Build the frontend
    ```bash
@@ -215,23 +233,31 @@ npm run lint
 
 2. Build the backend
    ```bash
-   ./mvnw clean package -DskipTests
+   mvn clean package -DskipTests
    ```
 
-3. Run the application
+3. Copy to server
    ```bash
-   java -jar target/financial_tracker-0.0.1-SNAPSHOT.jar
+   scp target/financial_tracker-0.0.1-SNAPSHOT.jar ubuntu@<EC2_IP>:~/app.jar
+   scp -r frontend/dist ubuntu@<EC2_IP>:~/frontend-dist
+   ```
+
+4. On the server
+   ```bash
+   sudo rm -rf /var/www/html/* && sudo cp -r ~/frontend-dist/* /var/www/html/
+   sudo systemctl restart financial-tracker
    ```
 
 ### Environment Variables
 
 Configure these environment variables for production:
 - `SPRING_PROFILES_ACTIVE` - Active Spring profile
-- `DATABASE_URL` - PostgreSQL connection URL
-- `DATABASE_USERNAME` - Database username
-- `DATABASE_PASSWORD` - Database password
+- `SPRING_DATASOURCE_URL` - PostgreSQL connection URL
+- `SPRING_DATASOURCE_USERNAME` - Database username
+- `SPRING_DATASOURCE_PASSWORD` - Database password
 - `JWT_SECRET` - Secret key for JWT token signing
-- `MAIL_HOST` - SMTP server host
+- `CORS_ORIGIN` - Frontend origin for CORS
+- `FRONTEND_URL` - Frontend base URL
 - `MAIL_USERNAME` - Email account username
 - `MAIL_PASSWORD` - Email account password
 
