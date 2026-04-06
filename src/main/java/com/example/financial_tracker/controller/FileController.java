@@ -1,11 +1,11 @@
 package com.example.financial_tracker.controller;
 
+import com.example.financial_tracker.entity.User;
 import com.example.financial_tracker.service.S3Service;
-import com.example.financial_tracker.util.RequestUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,10 +26,9 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(
             @RequestParam("file") MultipartFile file,
-            HttpServletRequest request) throws IOException {
+            @AuthenticationPrincipal User user) throws IOException {
 
-        Long userId = RequestUtils.getUserId(request);
-        String key = "users/" + userId + "/" + file.getOriginalFilename();
+        String key = "users/" + user.getId() + "/" + file.getOriginalFilename();
 
         String url = s3Service.uploadFile(key, file.getBytes(), file.getContentType());
 
@@ -56,9 +55,8 @@ public class FileController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<String>> listFiles(HttpServletRequest request) {
-        Long userId = RequestUtils.getUserId(request);
-        List<String> files = s3Service.listFiles("users/" + userId + "/");
+    public ResponseEntity<List<String>> listFiles(@AuthenticationPrincipal User user) {
+        List<String> files = s3Service.listFiles("users/" + user.getId() + "/");
         return ResponseEntity.ok(files);
     }
 }
