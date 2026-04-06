@@ -68,3 +68,10 @@ app:
 jwt:
   secret: ${JWT_SECRET:qW3rTy8iOp2sD4fG6hJ9kL1zX3cV5bN7mQ0wE2rT4yU6iO8pA1sD3fG5hJ7kL9zX1cV3bN5m}
   expiration: 86400000
+
+aws:
+  access-key-id: ${AWS_ACCESS_KEY_ID:}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY:}
+  region: ${AWS_REGION:eu-north-1}
+  s3:
+    bucket-name: ${AWS_S3_BUCKET:financial-tracker-files-idenyskap}
