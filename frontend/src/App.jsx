@@ -23,6 +23,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import EmailChangeConfirmationPage from "./pages/EmailChangeConfirmationPage.jsx";
 import CurrencyConverter from './components/currency/CurrencyConverter';
+import OAuth2CallbackPage from './pages/OAuth2CallbackPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ function App() {
               <Route path="/" element={<HomePage/>}/>
               <Route path="/register" element={<RegisterPage/>}/>
               <Route path="/login" element={<LoginPage/>}/>
+              <Route path="/oauth2/callback" element={<OAuth2CallbackPage/>}/>
 
               {/* Protected routes with Layout */}
               <Route

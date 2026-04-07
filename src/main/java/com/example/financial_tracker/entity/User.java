@@ -95,6 +95,12 @@ public class User implements UserDetails {
   @Column(name = "new_email_token_expires_at")
   private LocalDateTime newEmailTokenExpiresAt;
 
+  @Column(name = "auth_provider")
+  private String authProvider = "LOCAL";
+
+  @Column(name = "google_id")
+  private String googleId;
+
   @Column(name = "created_at")
   private LocalDateTime createdAt;
 

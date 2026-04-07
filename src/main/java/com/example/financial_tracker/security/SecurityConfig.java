@@ -28,6 +28,7 @@ public class SecurityConfig {
 
   private final JwtAuthFilter jwtAuthFilter;
   private final UserDetailsService userDetailsService;
+  private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
   @org.springframework.beans.factory.annotation.Value("${cors.allowed-origin:http://localhost:5173}")
   private String corsAllowedOrigin;
@@ -42,6 +43,7 @@ public class SecurityConfig {
         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
         .requestMatchers("/actuator/health").permitAll()
         .requestMatchers("/healthz").permitAll()
+        .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
         .requestMatchers("/api/v1/users/me").authenticated()
         .requestMatchers("/api/v1/users/profile").authenticated()
@@ -63,6 +65,9 @@ public class SecurityConfig {
         .requestMatchers("/api/v1/saved-searches/**").authenticated()
 
         .anyRequest().authenticated()
+      )
+      .oauth2Login(oauth2 -> oauth2
+        .successHandler(oAuth2LoginSuccessHandler)
       )
       .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .userDetailsService(userDetailsService)

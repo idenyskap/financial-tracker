@@ -108,6 +108,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginWithToken = async (token) => {
+    setToken(token);
+    await loadUser();
+  };
+
   const value = {
     user,
     login,
@@ -117,7 +122,8 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     requires2FA,
     setRequires2FA,
-    loadUser
+    loadUser,
+    loginWithToken
   };
 
   return (
