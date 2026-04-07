@@ -45,9 +45,11 @@ spring:
             required: true
     default-encoding: UTF-8
   cache:
-    type: caffeine
-    caffeine:
-      spec: maximumSize=500, expireAfterWrite=1h
+    type: redis
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 app:
   cookie:
