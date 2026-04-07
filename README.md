@@ -209,7 +209,7 @@ npm run lint
 
 The application is deployed on **AWS EC2** (t3.micro, Ubuntu 24.04):
 - **Nginx** — reverse proxy, serves frontend static files
-- **Spring Boot** — backend runs as a systemd service on port 8080
+- **Docker** — backend runs in a Docker container on port 8080
 - **PostgreSQL 16** — database running locally on the same instance
 - **Elastic IP** — static public IP address
 
@@ -219,7 +219,7 @@ Automated deployment via **GitHub Actions**. On every push to `main`:
 1. Builds the backend JAR (Maven)
 2. Builds the frontend (Vite)
 3. Copies artifacts to EC2 via SCP
-4. Restarts the backend service
+4. Builds Docker image and restarts the container
 
 Workflow: `.github/workflows/deploy.yml`
 
@@ -245,7 +245,15 @@ Workflow: `.github/workflows/deploy.yml`
 4. On the server
    ```bash
    sudo rm -rf /var/www/html/* && sudo cp -r ~/frontend-dist/* /var/www/html/
-   sudo systemctl restart financial-tracker
+   docker build -t financial-tracker .
+   docker stop financial-tracker || true
+   docker rm financial-tracker || true
+   docker run -d --name financial-tracker --restart unless-stopped --network host \
+     -e SPRING_PROFILES_ACTIVE=prod \
+     -e SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/financial_tracker \
+     -e SPRING_DATASOURCE_USERNAME=<db_user> \
+     -e SPRING_DATASOURCE_PASSWORD=<db_password> \
+     financial-tracker
    ```
 
 ### Environment Variables
