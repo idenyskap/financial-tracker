@@ -160,7 +160,7 @@ const LoginPage = () => {
           </div>
 
           <a
-            href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8080'}/oauth2/authorization/google`}
+            href={`${window.location.origin}/oauth2/authorization/google`}
             style={styles.googleButton}
           >
             <svg width="18" height="18" viewBox="0 0 18 18">
