@@ -22,6 +22,7 @@ import java.time.LocalTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@org.springframework.boot.autoconfigure.condition.ConditionalOnExpression("!'${spring.security.oauth2.client.registration.google.client-id:}'.isEmpty()")
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final UserRepository userRepository;

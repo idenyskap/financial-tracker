@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/files")
+@org.springframework.boot.autoconfigure.condition.ConditionalOnExpression("!'${aws.access-key-id:}'.isEmpty()")
 public class FileController {
 
     private final S3Service s3Service;

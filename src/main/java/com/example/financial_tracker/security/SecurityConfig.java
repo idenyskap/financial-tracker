@@ -28,7 +28,7 @@ public class SecurityConfig {
 
   private final JwtAuthFilter jwtAuthFilter;
   private final UserDetailsService userDetailsService;
-  private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+  private final org.springframework.beans.factory.ObjectProvider<OAuth2LoginSuccessHandler> oAuth2LoginSuccessHandlerProvider;
 
   @org.springframework.beans.factory.annotation.Value("${cors.allowed-origin:http://localhost:5173}")
   private String corsAllowedOrigin;
@@ -65,11 +65,14 @@ public class SecurityConfig {
         .requestMatchers("/api/v1/saved-searches/**").authenticated()
 
         .anyRequest().authenticated()
-      )
-      .oauth2Login(oauth2 -> oauth2
-        .successHandler(oAuth2LoginSuccessHandler)
-      )
-      .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      );
+
+    OAuth2LoginSuccessHandler oAuth2Handler = oAuth2LoginSuccessHandlerProvider.getIfAvailable();
+    if (oAuth2Handler != null) {
+      http.oauth2Login(oauth2 -> oauth2.successHandler(oAuth2Handler));
+    }
+
+    http.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .userDetailsService(userDetailsService)
       .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

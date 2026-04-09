@@ -9,6 +9,7 @@ import software.amazon.awssdk.services.s3.model.*;
 import java.util.List;
 
 @Service
+@org.springframework.boot.autoconfigure.condition.ConditionalOnExpression("!'${aws.access-key-id:}'.isEmpty()")
 public class S3Service {
 
     private final S3Client s3Client;
