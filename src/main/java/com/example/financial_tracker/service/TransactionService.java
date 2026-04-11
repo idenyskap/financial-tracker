@@ -142,8 +142,7 @@ public class TransactionService {
 
     BudgetWarningDTO warning = checkBudgetWarning(user, category);
     if (warning != null) {
-      webSocketNotificationService.sendToUser(
-        user.getEmail(),
+      webSocketNotificationService.broadcast(
         com.example.financial_tracker.dto.WebSocketNotificationDTO.budgetWarning(
           category.getName(),
           warning.getLevel().name(),
