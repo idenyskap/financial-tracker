@@ -743,5 +743,17 @@
     "allLoaded": "All transactions loaded",
     "backToPages": "Back to pages",
     "scrollToTop": "Scroll to top"
+  },
+  "notifications": {
+    "budgetWarning": {
+      "title": "Budget alert",
+      "warning": "{{category}} - approaching limit ({{amount}})",
+      "alert": "{{category}} - 90% of budget spent ({{amount}})",
+      "exceeded": "{{category}} - budget exceeded ({{amount}})"
+    },
+    "goalCompleted": {
+      "title": "Goal achieved!",
+      "message": "You reached your goal: {{goal}}"
+    }
   }
 }

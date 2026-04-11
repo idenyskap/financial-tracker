@@ -24,6 +24,12 @@ import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import EmailChangeConfirmationPage from "./pages/EmailChangeConfirmationPage.jsx";
 import CurrencyConverter from './components/currency/CurrencyConverter';
 import OAuth2CallbackPage from './pages/OAuth2CallbackPage';
+import { useWebSocketNotifications } from './hooks/useWebSocketNotifications';
+
+function WebSocketWrapper({ children }) {
+  useWebSocketNotifications();
+  return children;
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +44,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <WebSocketWrapper>
         <LanguageProvider>
           <CurrencyProvider>
             <ThemeProvider>
@@ -140,6 +147,7 @@ function App() {
             </ThemeProvider>
           </CurrencyProvider>
         </LanguageProvider>
+        </WebSocketWrapper>
       </AuthProvider>
     </QueryClientProvider>
   );

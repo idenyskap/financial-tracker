@@ -51,6 +51,7 @@ public class TransactionService {
   private final BudgetService budgetService;
   private final BudgetRepository budgetRepository;
   private final EmailService emailService;
+  private final WebSocketNotificationService webSocketNotificationService;
 
   private static final String[] CATEGORY_COLORS = {
     "#e74c3c", "#3498db", "#2ecc71", "#f39c12", "#9b59b6",
@@ -138,6 +139,18 @@ public class TransactionService {
     log.info("Successfully created transaction ID: {} for user: {} - Type: {}, Amount: {}, Category: '{}'",
       saved.getId(), user.getEmail(), saved.getType(),
       saved.getAmount(), category.getName());
+
+    BudgetWarningDTO warning = checkBudgetWarning(user, category);
+    if (warning != null) {
+      webSocketNotificationService.sendToUser(
+        user.getEmail(),
+        com.example.financial_tracker.dto.WebSocketNotificationDTO.budgetWarning(
+          category.getName(),
+          warning.getLevel().name(),
+          warning.getSpent()
+        )
+      );
+    }
 
     return transactionMapper.toDto(saved);
   }

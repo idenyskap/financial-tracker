@@ -743,5 +743,17 @@
     "allLoaded": "Всі транзакції завантажено",
     "backToPages": "Назад до сторінок",
     "scrollToTop": "Прокрутити вгору"
+  },
+  "notifications": {
+    "budgetWarning": {
+      "title": "Попередження бюджету",
+      "warning": "{{category}} - наближається до ліміту ({{amount}})",
+      "alert": "{{category}} - використано 90% бюджету ({{amount}})",
+      "exceeded": "{{category}} - бюджет перевищено ({{amount}})"
+    },
+    "goalCompleted": {
+      "title": "Ціль досягнута!",
+      "message": "Ви досягли цілі: {{goal}}"
+    }
   }
 }

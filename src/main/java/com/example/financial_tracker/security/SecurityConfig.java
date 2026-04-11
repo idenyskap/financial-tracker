@@ -44,6 +44,7 @@ public class SecurityConfig {
         .requestMatchers("/actuator/health").permitAll()
         .requestMatchers("/healthz").permitAll()
         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+        .requestMatchers("/ws/**").permitAll()
 
         .requestMatchers("/api/v1/users/me").authenticated()
         .requestMatchers("/api/v1/users/profile").authenticated()
