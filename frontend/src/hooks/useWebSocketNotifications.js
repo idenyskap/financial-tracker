@@ -4,6 +4,7 @@ import SockJS from 'sockjs-client';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './useAuth';
+import { getToken } from '../services/api';
 
 export const useWebSocketNotifications = () => {
   const { user, isAuthenticated } = useAuth();
@@ -14,14 +15,16 @@ export const useWebSocketNotifications = () => {
 
     const apiUrl = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8080';
     const socketUrl = `${apiUrl}/ws`;
+    const token = getToken();
 
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
+      connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
       reconnectDelay: 5000,
       onConnect: () => {
         console.log('WebSocket connected');
 
-        client.subscribe(`/user/${user.email}/queue/notifications`, (message) => {
+        client.subscribe(`/user/queue/notifications`, (message) => {
           try {
             const notification = JSON.parse(message.body);
             handleNotification(notification, t);

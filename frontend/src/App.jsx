@@ -49,7 +49,7 @@ function App() {
           <CurrencyProvider>
             <ThemeProvider>
             <Router>
-            <Toaster position="top-right" richColors/>
+            <Toaster position="top-right" richColors closeButton expand visibleToasts={5}/>
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<HomePage/>}/>
