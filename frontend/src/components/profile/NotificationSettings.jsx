@@ -230,8 +230,9 @@ function NotificationSettings() {
 
 const getStyles = (theme) => ({
   card: {
-    backgroundColor: theme.backgroundSecondary,
-    borderRadius: '8px',
+    backgroundColor: theme.cardBackground,
+    border: `1px solid ${theme.cardBorder}`,
+    borderRadius: theme.radius,
     padding: '2rem',
     boxShadow: theme.shadow,
   },
@@ -284,18 +285,18 @@ const getStyles = (theme) => ({
   },
   timeInput: {
     padding: '0.5rem',
-    borderRadius: '4px',
-    border: `1px solid ${theme.border}`,
-    backgroundColor: theme.background,
-    color: theme.text,
+    borderRadius: theme.radiusSm,
+    border: `1px solid ${theme.inputBorder}`,
+    backgroundColor: theme.inputBackground,
+    color: theme.inputText,
   },
   numberInput: {
     width: '60px',
     padding: '0.5rem',
-    borderRadius: '4px',
-    border: `1px solid ${theme.border}`,
-    backgroundColor: theme.background,
-    color: theme.text,
+    borderRadius: theme.radiusSm,
+    border: `1px solid ${theme.inputBorder}`,
+    backgroundColor: theme.inputBackground,
+    color: theme.inputText,
   },
   divider: {
     height: '1px',
@@ -309,10 +310,10 @@ const getStyles = (theme) => ({
   },
   saveButton: {
     padding: '0.75rem 2rem',
-    backgroundColor: theme.primary,
-    color: 'white',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: theme.radiusSm,
     fontSize: '1rem',
     cursor: 'pointer',
     transition: 'opacity 0.2s',

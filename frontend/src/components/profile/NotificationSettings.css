@@ -36,7 +36,7 @@
 }
 
 .notification-toggle input:checked + .toggle-slider {
-  background-color: #4CAF50;
+  background-color: #059669;
 }
 
 .notification-toggle input:checked + .toggle-slider::before {

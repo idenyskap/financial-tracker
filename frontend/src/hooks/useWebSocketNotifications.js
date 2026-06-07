@@ -13,8 +13,12 @@ export const useWebSocketNotifications = () => {
   useEffect(() => {
     if (!isAuthenticated || !user?.email) return;
 
-    const apiUrl = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:8080';
-    const socketUrl = `${apiUrl}/ws`;
+    // When VITE_API_URL is a relative path (e.g. "/api/v1" in dev), the base
+    // becomes "" — fall back to the current origin so the WS goes through the
+    // Vite proxy instead of hitting :8080 directly (which fails CORS).
+    const envUrl = import.meta.env.VITE_API_URL;
+    const base = envUrl ? envUrl.replace('/api/v1', '') : 'http://localhost:8080';
+    const socketUrl = `${base || window.location.origin}/ws`;
     const token = getToken();
 
     const client = new Client({

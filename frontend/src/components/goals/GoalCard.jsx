@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pencil, Trash2, Pause, Play } from 'lucide-react';
+import { Pencil, Trash2, Pause, Play, Check, X, AlertTriangle } from 'lucide-react';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { useCurrency } from '../../hooks/useCurrency';
 import { useLanguage } from '../../hooks/useLanguage';
@@ -14,22 +14,22 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
 
 
   const getProgressColor = () => {
-    if (goal.isCompleted) return '#27ae60';
-    if (goal.isOverdue) return '#e74c3c';
-    if (goal.progressPercentage >= 75) return '#f39c12';
-    return '#3498db';
+    if (goal.isCompleted) return styles.__success;
+    if (goal.isOverdue) return styles.__danger;
+    if (goal.progressPercentage >= 75) return styles.__warning;
+    return styles.__primary;
   };
 
   const getStatusIcon = () => {
     switch (goal.status) {
       case 'COMPLETED':
-        return '✓';
+        return <Check size={16} strokeWidth={3} />;
       case 'PAUSED':
-        return '❚❚';
+        return <Pause size={15} />;
       case 'CANCELLED':
-        return '✗';
+        return <X size={16} strokeWidth={3} />;
       default:
-        return goal.isOverdue ? '!' : null;
+        return goal.isOverdue ? <AlertTriangle size={15} /> : null;
     }
   };
 
@@ -58,9 +58,9 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
             {getStatusIcon() && (
               <span style={{
                 ...styles.statusIcon,
-                color: goal.status === 'COMPLETED' ? '#27ae60' :
-                  goal.status === 'CANCELLED' || goal.isOverdue ? '#e74c3c' :
-                    '#f39c12'
+                color: goal.status === 'COMPLETED' ? styles.__success :
+                  goal.status === 'CANCELLED' || goal.isOverdue ? styles.__danger :
+                    styles.__warning
               }}>
                 {getStatusIcon()}
               </span>
@@ -69,9 +69,9 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
           <div style={styles.badges}>
             <span style={{
               ...styles.priorityBadge,
-              backgroundColor: goal.priority === 'CRITICAL' ? '#e74c3c' :
-                goal.priority === 'HIGH' ? '#f39c12' :
-                  goal.priority === 'MEDIUM' ? '#3498db' : '#95a5a6'
+              backgroundColor: goal.priority === 'CRITICAL' ? styles.__danger :
+                goal.priority === 'HIGH' ? styles.__warning :
+                  goal.priority === 'MEDIUM' ? styles.__primary : styles.__textSecondary
             }}>
               {goal.priority === 'HIGH' ? t('goals.highPriorityOption') :
                goal.priority === 'MEDIUM' ? t('goals.mediumPriorityOption') :
@@ -82,7 +82,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
               <span style={styles.categoryBadge}>
                 <div style={{
                   ...styles.categoryDot,
-                  backgroundColor: goal.categoryColor || '#666',
+                  backgroundColor: goal.categoryColor || styles.__textSecondary,
                 }} />
                 <span style={styles.categoryName}>{goal.categoryName}</span>
               </span>
@@ -177,7 +177,7 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
             <span style={styles.detailLabel}>{t('goals.daysRemaining')}</span>
             <span style={{
               ...styles.detailValue,
-              color: goal.daysRemaining < 30 ? '#e74c3c' : styles.detailValue.color,
+              color: goal.daysRemaining < 30 ? styles.__danger : styles.detailValue.color,
             }}>
               {goal.daysRemaining > 0 ? goal.daysRemaining : t('goals.overdue')}
             </span>
@@ -273,6 +273,11 @@ function GoalCard({ goal, onEdit, onDelete, onContribute, onStatusChange }) {
 }
 
 const getStyles = (theme) => ({
+  __success: theme.success,
+  __danger: theme.danger,
+  __warning: theme.warning,
+  __primary: theme.primary,
+  __textSecondary: theme.textSecondary,
   card: {
     backgroundColor: theme.cardBackground,
     borderRadius: '12px',
@@ -401,9 +406,9 @@ const getStyles = (theme) => ({
     justifyContent: 'center',
     gap: '0.375rem',
     padding: '0.625rem 1rem',
-    backgroundColor: '#fef2f2',
-    color: '#dc2626',
-    border: '1px solid #fecaca',
+    backgroundColor: theme.dangerSoft,
+    color: theme.danger,
+    border: `1px solid ${theme.danger}33`,
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '0.8rem',

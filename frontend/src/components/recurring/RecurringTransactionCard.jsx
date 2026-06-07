@@ -40,13 +40,13 @@ function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) 
             <div style={styles.badges}>
               <span style={{
                 ...styles.typeBadge,
-                backgroundColor: transaction.type === 'INCOME' ? '#10b981' : '#ef4444',
+                backgroundColor: transaction.type === 'INCOME' ? styles.__success : styles.__danger,
               }}>
                 {transaction.type === 'INCOME' ? t('recurring.incomeLabel') : t('recurring.expenseLabel')}
               </span>
               <span style={{
                 ...styles.statusBadge,
-                backgroundColor: transaction.active ? '#10b981' : '#64748b',
+                backgroundColor: transaction.active ? styles.__success : styles.__textTertiary,
               }}>
                 {transaction.active ? t('recurring.activeLabel') : t('recurring.pausedLabel')}
               </span>
@@ -70,7 +70,7 @@ function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) 
           <div style={styles.amountDisplay}>
             <span style={{
               ...styles.amount,
-              color: transaction.type === 'INCOME' ? '#10b981' : '#ef4444',
+              color: transaction.type === 'INCOME' ? styles.__success : styles.__danger,
             }}>
               {transaction.type === 'INCOME' ? '+' : '-'}
               {formatDualCurrency(transaction.amount)}
@@ -142,10 +142,13 @@ function RecurringTransactionCard({ transaction, onEdit, onDelete, onExecute }) 
 }
 
 const getStyles = (theme) => ({
+  __success: theme.success,
+  __danger: theme.danger,
+  __textTertiary: theme.textTertiary,
   card: {
     backgroundColor: theme.cardBackground,
     border: `1px solid ${theme.cardBorder}`,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     overflow: 'hidden',
     transition: 'all 0.2s ease',
     boxShadow: theme.shadow,
@@ -179,16 +182,16 @@ const getStyles = (theme) => ({
   },
   typeBadge: {
     padding: '0.25rem 0.75rem',
-    borderRadius: '6px',
-    color: 'white',
+    borderRadius: theme.radiusFull,
+    color: '#ffffff',
     fontSize: '0.75rem',
     fontWeight: '600',
     textTransform: 'capitalize',
   },
   statusBadge: {
     padding: '0.25rem 0.75rem',
-    borderRadius: '6px',
-    color: 'white',
+    borderRadius: theme.radiusFull,
+    color: '#ffffff',
     fontSize: '0.75rem',
     fontWeight: '600',
   },
@@ -200,15 +203,15 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     gap: '0.5rem',
     padding: '0.5rem 1rem',
-    backgroundColor: '#7c3aed',
-    color: 'white',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '600',
     transition: 'all 0.2s ease',
-    boxShadow: '0 2px 4px rgba(124, 58, 237, 0.2)',
+    boxShadow: theme.shadow,
   },
   cardContent: {
     padding: '1.5rem',
@@ -256,7 +259,7 @@ const getStyles = (theme) => ({
     padding: '0.5rem 1rem',
     backgroundColor: theme.backgroundSecondary,
     border: `1px solid ${theme.border}`,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     fontSize: '0.875rem',
   },
   categoryIndicator: {
@@ -285,7 +288,7 @@ const getStyles = (theme) => ({
     gap: '1rem',
     padding: '1rem',
     backgroundColor: theme.backgroundSecondary,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     border: `1px solid ${theme.border}`,
   },
   dateItem: {
@@ -323,7 +326,7 @@ const getStyles = (theme) => ({
     backgroundColor: theme.backgroundSecondary,
     color: theme.textSecondary,
     border: `1px solid ${theme.border}`,
-    borderRadius: '6px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',
@@ -334,10 +337,10 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     gap: '0.5rem',
     padding: '0.5rem 1rem',
-    backgroundColor: '#fef2f2',
-    color: '#dc2626',
-    border: '1px solid #fecaca',
-    borderRadius: '6px',
+    backgroundColor: theme.dangerSoft,
+    color: theme.danger,
+    border: `1px solid ${theme.dangerSoft}`,
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',

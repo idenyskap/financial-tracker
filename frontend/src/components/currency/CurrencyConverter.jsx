@@ -306,7 +306,7 @@ const getStyles = (theme) => ({
     marginBottom: '2rem',
     padding: '1.5rem',
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     boxShadow: theme.shadow,
     border: `1px solid ${theme.cardBorder}`,
   },
@@ -330,10 +330,10 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     gap: '0.5rem',
     padding: '0.75rem 1rem',
-    backgroundColor: '#64748b',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
+    backgroundColor: theme.backgroundSecondary,
+    color: theme.textSecondary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',
@@ -344,7 +344,7 @@ const getStyles = (theme) => ({
   },
   converterCard: {
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     boxShadow: theme.shadow,
     marginBottom: '2rem',
     overflow: 'hidden',
@@ -370,7 +370,7 @@ const getStyles = (theme) => ({
   amountInput: {
     padding: '1rem',
     border: `2px solid ${theme.inputBorder}`,
-    borderRadius: '12px',
+    borderRadius: theme.radiusSm,
     fontSize: '1.5rem',
     fontWeight: '600',
     textAlign: 'center',
@@ -397,7 +397,7 @@ const getStyles = (theme) => ({
     padding: '0.5rem 1rem',
     backgroundColor: theme.backgroundSecondary,
     border: `1px solid ${theme.border}`,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.875rem',
     fontWeight: '500',
@@ -407,7 +407,7 @@ const getStyles = (theme) => ({
   currencySection: {
     padding: '1.5rem',
     backgroundColor: theme.backgroundSecondary,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     border: `1px solid ${theme.border}`,
   },
   currencySelectors: {
@@ -429,7 +429,7 @@ const getStyles = (theme) => ({
   currencySelect: {
     padding: '0.875rem 1rem',
     border: `2px solid ${theme.inputBorder}`,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     fontSize: '1rem',
     fontWeight: '500',
     backgroundColor: theme.inputBackground,
@@ -451,10 +451,10 @@ const getStyles = (theme) => ({
   },
   swapButton: {
     padding: '0.75rem',
-    backgroundColor: '#3b82f6',
-    color: 'white',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '50%',
+    borderRadius: theme.radiusFull,
     cursor: 'pointer',
     fontSize: '1.25rem',
     fontWeight: 'bold',
@@ -464,16 +464,16 @@ const getStyles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 4px rgba(59, 130, 246, 0.2)',
+    boxShadow: theme.shadow,
   },
   swapIcon: {
     fontSize: '1.25rem',
   },
   resultSection: {
     padding: '2rem',
-    background: 'linear-gradient(135deg, #ddd6fe 0%, #e0e7ff 100%)',
-    border: '1px solid #c4b5fd',
-    borderRadius: '12px',
+    backgroundColor: theme.primarySoft,
+    border: `1px solid ${theme.primary}`,
+    borderRadius: theme.radius,
     textAlign: 'center',
   },
   resultContent: {
@@ -488,7 +488,7 @@ const getStyles = (theme) => ({
   resultAmount: {
     fontSize: '2.5rem',
     fontWeight: '700',
-    color: '#5b21b6',
+    color: theme.primary,
     lineHeight: '1.2',
   },
   resultDetails: {
@@ -498,17 +498,17 @@ const getStyles = (theme) => ({
   },
   resultEquation: {
     fontSize: '1rem',
-    color: '#6b46c1',
+    color: theme.text,
     fontWeight: '600',
   },
   resultRate: {
     fontSize: '0.875rem',
-    color: '#7c3aed',
+    color: theme.textSecondary,
     fontWeight: '500',
   },
   resultTimestamp: {
     fontSize: '0.75rem',
-    color: '#8b5cf6',
+    color: theme.textTertiary,
     opacity: 0.8,
   },
   loading: {
@@ -528,7 +528,7 @@ const getStyles = (theme) => ({
     marginBottom: '1rem',
   },
   loadingText: {
-    color: '#64748b',
+    color: theme.textSecondary,
     fontSize: '0.875rem',
   },
   errorState: {
@@ -536,9 +536,9 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     gap: '0.75rem',
     padding: '1rem',
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
-    borderRadius: '8px',
+    backgroundColor: theme.dangerSoft,
+    border: `1px solid ${theme.danger}`,
+    borderRadius: theme.radiusSm,
   },
   errorIcon: {
     fontSize: '1.25rem',
@@ -550,7 +550,7 @@ const getStyles = (theme) => ({
   },
   historySection: {
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     boxShadow: theme.shadow,
     marginBottom: '2rem',
     overflow: 'hidden',
@@ -558,7 +558,7 @@ const getStyles = (theme) => ({
   },
   ratesSection: {
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radius,
     boxShadow: theme.shadow,
     overflow: 'hidden',
     border: `1px solid ${theme.cardBorder}`,
@@ -592,7 +592,7 @@ const getStyles = (theme) => ({
     alignItems: 'center',
     padding: '1rem',
     backgroundColor: theme.backgroundSecondary,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     border: `1px solid ${theme.border}`,
   },
   historyConversion: {
@@ -622,7 +622,7 @@ const getStyles = (theme) => ({
   rateCard: {
     padding: '1rem',
     backgroundColor: theme.backgroundSecondary,
-    borderRadius: '8px',
+    borderRadius: theme.radiusSm,
     border: `1px solid ${theme.border}`,
     textAlign: 'center',
   },

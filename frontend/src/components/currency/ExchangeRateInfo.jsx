@@ -119,9 +119,10 @@ const getStyles = (theme) => ({
   container: {
     backgroundColor: theme.cardBackground,
     border: `1px solid ${theme.cardBorder}`,
-    borderRadius: '8px',
+    borderRadius: theme.radius,
     padding: '1rem',
     marginTop: '1rem',
+    boxShadow: theme.shadow,
   },
   header: {
     display: 'flex',
@@ -145,8 +146,8 @@ const getStyles = (theme) => ({
   },
   rate: {
     padding: '0.75rem',
-    backgroundColor: theme.backgroundSecondary,
-    borderRadius: '6px',
+    backgroundColor: theme.primarySoft,
+    borderRadius: theme.radiusSm,
     textAlign: 'center',
   },
   rateText: {
@@ -183,8 +184,8 @@ const getStyles = (theme) => ({
     alignItems: 'flex-start',
     gap: '0.5rem',
     padding: '0.75rem',
-    backgroundColor: theme.warningBackground || theme.backgroundSecondary,
-    borderRadius: '6px',
+    backgroundColor: theme.warningSoft,
+    borderRadius: theme.radiusSm,
     marginTop: '0.5rem',
   },
   noteIcon: {

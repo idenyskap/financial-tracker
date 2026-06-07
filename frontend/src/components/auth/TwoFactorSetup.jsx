@@ -3,8 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import api from '../../services/api';
 import { toast } from 'sonner';
 import { Shield, Copy, CheckCircle } from 'lucide-react';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const TwoFactorSetup = ({ onClose, onSuccess }) => {
+  const styles = useThemedStyles(getStyles);
   const [step, setStep] = useState(1);
   const [setupData, setSetupData] = useState(null);
   const [verificationCode, setVerificationCode] = useState('');
@@ -64,39 +66,39 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-        <div className="flex items-center mb-4">
-          <Shield className="w-6 h-6 text-blue-600 mr-2" />
-          <h2 className="text-xl font-semibold">Enable Two-Factor Authentication</h2>
+    <div style={styles.overlay}>
+      <div style={styles.modal}>
+        <div style={styles.headerRow}>
+          <Shield style={styles.headerIcon} />
+          <h2 style={styles.title}>Enable Two-Factor Authentication</h2>
         </div>
 
         {step === 1 && (
-          <div className="space-y-4">
-            <p className="text-gray-600 dark:text-gray-400">
+          <div style={styles.stack}>
+            <p style={styles.bodyText}>
               Two-factor authentication adds an extra layer of security to your account.
               You'll need to enter a code from your authenticator app in addition to your password.
             </p>
 
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-              <h3 className="font-medium mb-2">You'll need:</h3>
-              <ul className="list-disc list-inside text-sm space-y-1">
+            <div style={styles.infoBox}>
+              <h3 style={styles.infoTitle}>You'll need:</h3>
+              <ul style={styles.infoList}>
                 <li>An authenticator app (Google Authenticator, Authy, etc.)</li>
                 <li>A secure place to store recovery codes</li>
               </ul>
             </div>
 
-            <div className="flex space-x-3">
+            <div style={styles.buttonRow}>
               <button
                 onClick={onClose}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                style={styles.secondaryButton}
               >
                 Cancel
               </button>
               <button
                 onClick={handleSetup}
                 disabled={setupMutation.isPending}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                style={{ ...styles.primaryButton, ...(setupMutation.isPending ? styles.disabled : {}) }}
               >
                 {setupMutation.isPending ? 'Setting up...' : 'Continue'}
               </button>
@@ -105,24 +107,24 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
         )}
 
         {step === 2 && setupData && (
-          <div className="space-y-4">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <div style={styles.stack}>
+            <div style={styles.center}>
+              <p style={styles.bodyTextCenter}>
                 Scan this QR code with your authenticator app
               </p>
-              <div className="bg-white p-4 rounded-lg inline-block">
-                <img src={setupData.qrCode} alt="2FA QR Code" className="w-48 h-48" />
+              <div style={styles.qrBox}>
+                <img src={setupData.qrCode} alt="2FA QR Code" style={styles.qrImage} />
               </div>
-              <p className="text-xs text-gray-500 mt-2">
+              <p style={styles.hint}>
                 Can't scan? Enter this code manually: <br />
-                <code className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                <code style={styles.code}>
                   {setupData.secret}
                 </code>
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label style={styles.inputLabel}>
                 Enter verification code from your app
               </label>
               <input
@@ -130,7 +132,7 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="000000"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 text-center text-lg"
+                style={styles.codeInput}
                 maxLength="6"
               />
             </div>
@@ -138,7 +140,7 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
             <button
               onClick={() => setStep(3)}
               disabled={verificationCode.length !== 6}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              style={{ ...styles.primaryButtonFull, ...(verificationCode.length !== 6 ? styles.disabled : {}) }}
             >
               Next: Save Recovery Codes
             </button>
@@ -146,21 +148,21 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
         )}
 
         {step === 3 && setupData && (
-          <div className="space-y-4">
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg">
-              <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+          <div style={styles.stack}>
+            <div style={styles.warningBox}>
+              <p style={styles.warningTitle}>
                 Important: Save these recovery codes
               </p>
-              <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+              <p style={styles.warningText}>
                 Use these codes to access your account if you lose your authenticator device.
                 Each code can only be used once.
               </p>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-              <div className="grid grid-cols-2 gap-2 font-mono text-sm">
+            <div style={styles.codesBox}>
+              <div style={styles.codesGrid}>
                 {Array.from(setupData.recoveryCodes).map((code, index) => (
-                  <div key={index} className="text-center">
+                  <div key={index} style={styles.codeCell}>
                     {code}
                   </div>
                 ))}
@@ -169,32 +171,32 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
 
             <button
               onClick={copyRecoveryCodes}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center"
+              style={styles.copyButton}
             >
               {copiedCodes ? (
                 <>
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                  <CheckCircle style={styles.copyIconSuccess} />
                   Copied!
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 mr-2" />
+                  <Copy style={styles.copyIcon} />
                   Copy Recovery Codes
                 </>
               )}
             </button>
 
-            <div className="flex space-x-3">
+            <div style={styles.buttonRow}>
               <button
                 onClick={() => setStep(2)}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                style={styles.secondaryButton}
               >
                 Back
               </button>
               <button
                 onClick={handleVerification}
                 disabled={enableMutation.isPending}
-                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                style={{ ...styles.successButton, ...(enableMutation.isPending ? styles.disabled : {}) }}
               >
                 {enableMutation.isPending ? 'Enabling...' : 'Enable 2FA'}
               </button>
@@ -205,5 +207,231 @@ const TwoFactorSetup = ({ onClose, onSuccess }) => {
     </div>
   );
 };
+
+const getStyles = (theme) => ({
+  overlay: {
+    position: 'fixed',
+    inset: 0,
+    backgroundColor: theme.overlay,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 50,
+  },
+  modal: {
+    backgroundColor: theme.cardBackground,
+    border: `1px solid ${theme.cardBorder}`,
+    borderRadius: theme.radius,
+    boxShadow: theme.shadowLarge,
+    padding: '1.5rem',
+    maxWidth: '28rem',
+    width: '100%',
+    margin: '0 1rem',
+  },
+  headerRow: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '1rem',
+  },
+  headerIcon: {
+    width: '1.5rem',
+    height: '1.5rem',
+    color: theme.primary,
+    marginRight: '0.5rem',
+  },
+  title: {
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    color: theme.text,
+    margin: 0,
+  },
+  stack: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  bodyText: {
+    color: theme.textSecondary,
+    margin: 0,
+    lineHeight: '1.5',
+  },
+  bodyTextCenter: {
+    fontSize: '0.875rem',
+    color: theme.textSecondary,
+    marginBottom: '1rem',
+  },
+  infoBox: {
+    backgroundColor: theme.primarySoft,
+    padding: '1rem',
+    borderRadius: theme.radiusSm,
+  },
+  infoTitle: {
+    fontWeight: '500',
+    color: theme.text,
+    marginTop: 0,
+    marginBottom: '0.5rem',
+  },
+  infoList: {
+    listStyle: 'disc',
+    listStylePosition: 'inside',
+    fontSize: '0.875rem',
+    color: theme.textSecondary,
+    margin: 0,
+    paddingLeft: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+  },
+  buttonRow: {
+    display: 'flex',
+    gap: '0.75rem',
+  },
+  secondaryButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    backgroundColor: theme.backgroundSecondary,
+    color: theme.textSecondary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radiusSm,
+    cursor: 'pointer',
+    fontSize: '0.95rem',
+  },
+  primaryButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    background: theme.gradient,
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: theme.radiusSm,
+    cursor: 'pointer',
+    fontSize: '0.95rem',
+  },
+  primaryButtonFull: {
+    width: '100%',
+    padding: '0.5rem 1rem',
+    background: theme.gradient,
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: theme.radiusSm,
+    cursor: 'pointer',
+    fontSize: '0.95rem',
+  },
+  successButton: {
+    flex: 1,
+    padding: '0.5rem 1rem',
+    backgroundColor: theme.success,
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: theme.radiusSm,
+    cursor: 'pointer',
+    fontSize: '0.95rem',
+  },
+  disabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+  center: {
+    textAlign: 'center',
+  },
+  qrBox: {
+    backgroundColor: '#ffffff',
+    padding: '1rem',
+    borderRadius: theme.radiusSm,
+    display: 'inline-block',
+  },
+  qrImage: {
+    width: '12rem',
+    height: '12rem',
+  },
+  hint: {
+    fontSize: '0.75rem',
+    color: theme.textTertiary,
+    marginTop: '0.5rem',
+  },
+  code: {
+    fontSize: '0.75rem',
+    backgroundColor: theme.backgroundTertiary,
+    color: theme.text,
+    padding: '0.25rem 0.5rem',
+    borderRadius: theme.radiusSm,
+    fontFamily: theme.fontMono,
+  },
+  inputLabel: {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: theme.text,
+    marginBottom: '0.5rem',
+  },
+  codeInput: {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: `1px solid ${theme.inputBorder}`,
+    borderRadius: theme.radiusSm,
+    backgroundColor: theme.inputBackground,
+    color: theme.inputText,
+    textAlign: 'center',
+    fontSize: '1.125rem',
+    outline: 'none',
+  },
+  warningBox: {
+    backgroundColor: theme.warningSoft,
+    padding: '1rem',
+    borderRadius: theme.radiusSm,
+  },
+  warningTitle: {
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: theme.warningText,
+    marginTop: 0,
+    marginBottom: '0.25rem',
+  },
+  warningText: {
+    fontSize: '0.75rem',
+    color: theme.warningText,
+    margin: 0,
+    lineHeight: '1.4',
+  },
+  codesBox: {
+    backgroundColor: theme.backgroundSecondary,
+    padding: '1rem',
+    borderRadius: theme.radiusSm,
+  },
+  codesGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '0.5rem',
+    fontFamily: theme.fontMono,
+    fontSize: '0.875rem',
+  },
+  codeCell: {
+    textAlign: 'center',
+    color: theme.text,
+  },
+  copyButton: {
+    width: '100%',
+    padding: '0.5rem 1rem',
+    backgroundColor: theme.backgroundSecondary,
+    color: theme.textSecondary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radiusSm,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '0.95rem',
+  },
+  copyIcon: {
+    width: '1rem',
+    height: '1rem',
+    marginRight: '0.5rem',
+  },
+  copyIconSuccess: {
+    width: '1rem',
+    height: '1rem',
+    marginRight: '0.5rem',
+    color: theme.success,
+  },
+});
 
 export default TwoFactorSetup;

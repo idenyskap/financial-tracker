@@ -3,10 +3,12 @@ import { goalService } from '../../services/goalService';
 import { Link } from 'react-router-dom';
 import { useCurrency } from '../../hooks/useCurrency';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 function GoalsWidget() {
-  const { formatCurrency, formatDualCurrency } = useCurrency();
+  const { formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
+  const styles = useThemedStyles(getStyles);
   const { data: goalsData } = useQuery({
     queryKey: ['goals', true],
     queryFn: () => goalService.getAll(true),
@@ -15,42 +17,32 @@ function GoalsWidget() {
   const goals = goalsData?.data || [];
   const topGoals = goals.slice(0, 3);
 
-
   if (goals.length === 0) {
     return (
-      <div style={styles.widget}>
-        <h3 style={styles.title}>
-          {t('dashboard.financialGoals')}
-        </h3>
-        <div style={styles.empty}>
-          <p>{t('dashboard.noActiveGoals')}</p>
-          <Link to="/goals" style={styles.link}>{t('dashboard.createFirstGoal')}</Link>
-        </div>
+      <div style={styles.empty}>
+        <p style={styles.emptyText}>{t('dashboard.noActiveGoals')}</p>
+        <Link to="/goals" style={styles.link}>{t('dashboard.createFirstGoal')}</Link>
       </div>
     );
   }
 
   return (
     <div style={styles.widget}>
-      <div style={styles.header}>
-        <h3 style={styles.title}>
-          {t('dashboard.financialGoals')}
-        </h3>
-        <Link to="/goals" style={styles.viewAll}>{t('dashboard.viewAll')}</Link>
-      </div>
-
       <div style={styles.goalsList}>
         {topGoals.map(goal => {
           const progressPercentage = Math.min(goal.progressPercentage || 0, 100);
+          const fillColor = goal.isOverdue
+            ? styles.__danger
+            : progressPercentage >= 75
+              ? styles.__success
+              : styles.__primary;
 
           return (
             <div key={goal.id} style={styles.goalItem}>
               <div style={styles.goalHeader}>
                 <h4 style={styles.goalName}>{goal.name}</h4>
                 {goal.daysRemaining < 30 && goal.daysRemaining > 0 && (
-                  <div style={styles.urgentBadge}>
-                    {goal.daysRemaining}d
-                  </div>
+                  <div style={styles.urgentBadge}>{goal.daysRemaining}d</div>
                 )}
               </div>
 
@@ -67,8 +59,7 @@ function GoalsWidget() {
                     style={{
                       ...styles.progressFill,
                       width: `${progressPercentage}%`,
-                      backgroundColor: goal.isOverdue ? '#e74c3c' :
-                        progressPercentage >= 75 ? '#f39c12' : '#3498db'
+                      backgroundColor: fillColor,
                     }}
                   />
                 </div>
@@ -103,50 +94,34 @@ function GoalsWidget() {
   );
 }
 
-const styles = {
-  widget: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '1.5rem',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-  title: {
-    margin: 0,
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    color: '#2c3e50',
-  },
-  viewAll: {
-    color: '#3498db',
-    textDecoration: 'none',
-    fontSize: '0.875rem',
-    fontWeight: '500',
-  },
+const getStyles = (theme) => ({
+  __primary: theme.primary,
+  __success: theme.success,
+  __danger: theme.danger,
+  widget: {},
   empty: {
     textAlign: 'center',
-    padding: '2rem',
-    color: '#666',
+    padding: '2rem 1rem',
+    color: theme.textSecondary,
+  },
+  emptyText: {
+    margin: '0 0 0.5rem 0',
   },
   link: {
-    color: '#3498db',
+    color: theme.primary,
     textDecoration: 'none',
-    fontWeight: '500',
+    fontWeight: 600,
   },
   goalsList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
+    gap: '0.85rem',
   },
   goalItem: {
     padding: '1rem',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '6px',
+    backgroundColor: theme.backgroundSecondary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radius,
   },
   goalHeader: {
     display: 'flex',
@@ -156,17 +131,17 @@ const styles = {
   },
   goalName: {
     margin: 0,
-    fontSize: '1rem',
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    color: theme.text,
   },
   urgentBadge: {
-    padding: '0.25rem 0.5rem',
-    backgroundColor: '#fee',
-    color: '#e74c3c',
-    borderRadius: '4px',
-    fontSize: '0.75rem',
-    fontWeight: '600',
+    padding: '0.2rem 0.5rem',
+    backgroundColor: theme.dangerSoft,
+    color: theme.danger,
+    borderRadius: theme.radiusFull,
+    fontSize: '0.72rem',
+    fontWeight: 600,
   },
   goalProgress: {
     display: 'flex',
@@ -176,35 +151,36 @@ const styles = {
   progressInfo: {
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: '0.875rem',
+    fontSize: '0.85rem',
   },
   currentAmount: {
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontWeight: 600,
+    color: theme.text,
   },
   targetAmount: {
-    color: '#666',
-    fontWeight: '500',
+    color: theme.textSecondary,
+    fontWeight: 500,
   },
   progressBar: {
     height: '8px',
-    backgroundColor: '#e0e0e0',
-    borderRadius: '4px',
+    backgroundColor: theme.backgroundTertiary,
+    borderRadius: theme.radiusFull,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    transition: 'width 0.3s ease',
+    borderRadius: theme.radiusFull,
+    transition: 'width 0.4s ease',
   },
   progressStats: {
     display: 'flex',
     justifyContent: 'space-between',
     fontSize: '0.75rem',
-    color: '#666',
+    color: theme.textSecondary,
   },
   monthlySaving: {
-    color: '#3498db',
-    fontWeight: '600',
+    color: theme.primary,
+    fontWeight: 600,
   },
   quickStats: {
     display: 'grid',
@@ -212,7 +188,7 @@ const styles = {
     gap: '1rem',
     marginTop: '1rem',
     paddingTop: '1rem',
-    borderTop: '1px solid #e0e0e0',
+    borderTop: `1px solid ${theme.border}`,
   },
   stat: {
     display: 'flex',
@@ -221,14 +197,14 @@ const styles = {
   },
   statValue: {
     fontSize: '1.25rem',
-    fontWeight: 'bold',
-    color: '#2c3e50',
+    fontWeight: 700,
+    color: theme.text,
   },
   statLabel: {
     fontSize: '0.75rem',
-    color: '#666',
-    fontWeight: '500',
+    color: theme.textSecondary,
+    fontWeight: 500,
   },
-};
+});
 
 export default GoalsWidget;

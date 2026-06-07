@@ -156,7 +156,9 @@ const LoginPage = () => {
           </button>
 
           <div style={styles.divider}>
+            <span style={styles.dividerLine} />
             <span style={styles.dividerText}>or</span>
+            <span style={styles.dividerLine} />
           </div>
 
           <a
@@ -189,12 +191,13 @@ const getStyles = (theme, { isMobile } = {}) => ({
     position: 'relative',
   },
   card: {
-    backgroundColor: theme.backgroundSecondary,
+    backgroundColor: theme.cardBackground,
     padding: isMobile ? '24px' : '40px',
-    borderRadius: '12px',
-    boxShadow: theme.shadow,
+    borderRadius: theme.radiusLg,
+    boxShadow: theme.shadowLarge,
+    border: `1px solid ${theme.cardBorder}`,
     width: '100%',
-    maxWidth: '400px',
+    maxWidth: '420px',
   },
   header: {
     textAlign: 'center',
@@ -271,41 +274,49 @@ const getStyles = (theme, { isMobile } = {}) => ({
   },
   button: {
     width: '100%',
-    padding: '12px',
-    backgroundColor: theme.primary,
-    color: 'white',
+    padding: '13px',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
+    borderRadius: '10px',
+    fontSize: '15px',
     fontWeight: '600',
     cursor: 'pointer',
-    transition: 'opacity 0.2s',
+    transition: 'opacity 0.2s, transform 0.08s',
     marginTop: '8px',
+    boxShadow: '0 6px 16px rgba(16, 185, 129, 0.3)',
   },
   buttonDisabled: {
     opacity: 0.5,
     cursor: 'not-allowed',
   },
   errorMessage: {
-    backgroundColor: '#fee2e2',
-    color: '#dc2626',
+    backgroundColor: theme.dangerSoft,
+    color: theme.danger,
     padding: '12px',
-    borderRadius: '8px',
+    borderRadius: '10px',
     fontSize: '14px',
     textAlign: 'center',
-    border: '1px solid #fecaca',
+    border: `1px solid ${theme.danger}33`,
   },
   divider: {
     display: 'flex',
     alignItems: 'center',
     margin: '8px 0',
     gap: '12px',
+    borderTop: 'none',
+  },
+  dividerLine: {
+    flex: 1,
+    height: '1px',
+    backgroundColor: theme.border,
   },
   dividerText: {
-    color: theme.textSecondary,
-    fontSize: '14px',
-    flex: 1,
-    textAlign: 'center',
+    color: theme.textTertiary,
+    fontSize: '12px',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    flex: 'none',
   },
   googleButton: {
     display: 'flex',
