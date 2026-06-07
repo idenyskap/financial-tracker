@@ -2,8 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../services/api';
 import { ChevronDown, Search } from 'lucide-react';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 const CurrencySelector = ({ value, onChange, label = "Currency" }) => {
+  const styles = useThemedStyles(getStyles);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef(null);
@@ -44,8 +46,8 @@ const CurrencySelector = ({ value, onChange, label = "Currency" }) => {
   const selectedCurrency = currencyList.find(c => c.code === value);
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    <div style={styles.wrapper} ref={dropdownRef}>
+      <label style={styles.label}>
         {label}
       </label>
 
@@ -53,49 +55,49 @@ const CurrencySelector = ({ value, onChange, label = "Currency" }) => {
         type="button"
         onClick={() => !isLoading && setIsOpen(!isOpen)}
         disabled={isLoading}
-        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        style={{ ...styles.trigger, ...(isLoading ? styles.triggerDisabled : {}) }}
       >
-        <div className="flex items-center">
+        <div style={styles.triggerInner}>
           {isLoading ? (
-            <span className="text-gray-500">Loading currencies...</span>
+            <span style={styles.muted}>Loading currencies...</span>
           ) : error ? (
-            <span className="text-red-500">Failed to load currencies</span>
+            <span style={styles.errorText}>Failed to load currencies</span>
           ) : selectedCurrency ? (
             <>
-              <span className="text-lg mr-2">{selectedCurrency.symbol}</span>
-              <span className="font-medium">{selectedCurrency.code}</span>
-              <span className="text-gray-500 dark:text-gray-400 ml-2 text-sm">
+              <span style={styles.symbolLg}>{selectedCurrency.symbol}</span>
+              <span style={styles.codeText}>{selectedCurrency.code}</span>
+              <span style={styles.nameText}>
                 {selectedCurrency.name}
               </span>
             </>
           ) : (
-            <span className="text-gray-500">Select currency</span>
+            <span style={styles.muted}>Select currency</span>
           )}
         </div>
         {isLoading ? (
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+          <div style={styles.spinner}></div>
         ) : (
-          <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown style={{ ...styles.chevron, transform: isOpen ? 'rotate(180deg)' : 'none' }} />
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg">
-          <div className="p-2 border-b border-gray-200 dark:border-gray-700">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div style={styles.dropdown}>
+          <div style={styles.searchWrap}>
+            <div style={styles.searchInner}>
+              <Search style={styles.searchIcon} />
               <input
                 ref={searchRef}
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search currencies..."
-                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
+                style={styles.searchInput}
               />
             </div>
           </div>
 
-          <div className="max-h-64 overflow-y-auto">
+          <div style={styles.optionList}>
             {filteredCurrencies.length > 0 ? (
               filteredCurrencies.map((currency) => (
                 <button
@@ -105,17 +107,17 @@ const CurrencySelector = ({ value, onChange, label = "Currency" }) => {
                     setIsOpen(false);
                     setSearchTerm('');
                   }}
-                  className="w-full px-3 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                  style={styles.option}
                 >
-                  <span className="text-lg mr-3 w-6">{currency.symbol}</span>
-                  <span className="font-medium mr-2">{currency.code}</span>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm">
+                  <span style={styles.optionSymbol}>{currency.symbol}</span>
+                  <span style={styles.optionCode}>{currency.code}</span>
+                  <span style={styles.optionName}>
                     {currency.name}
                   </span>
                 </button>
               ))
             ) : (
-              <div className="px-3 py-4 text-center text-gray-500 dark:text-gray-400 text-sm">
+              <div style={styles.empty}>
                 {searchTerm ? 'No currencies found' : 'No currencies available'}
               </div>
             )}
@@ -125,5 +127,145 @@ const CurrencySelector = ({ value, onChange, label = "Currency" }) => {
     </div>
   );
 };
+
+const getStyles = (theme) => ({
+  wrapper: {
+    position: 'relative',
+  },
+  label: {
+    display: 'block',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: theme.textSecondary,
+    marginBottom: '0.25rem',
+  },
+  trigger: {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    border: `1px solid ${theme.inputBorder}`,
+    borderRadius: theme.radiusSm,
+    backgroundColor: theme.inputBackground,
+    color: theme.inputText,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    cursor: 'pointer',
+    fontSize: '0.95rem',
+  },
+  triggerDisabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+  triggerInner: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  muted: {
+    color: theme.textTertiary,
+  },
+  errorText: {
+    color: theme.danger,
+  },
+  symbolLg: {
+    fontSize: '1.125rem',
+    marginRight: '0.5rem',
+  },
+  codeText: {
+    fontWeight: '500',
+    color: theme.inputText,
+  },
+  nameText: {
+    color: theme.textSecondary,
+    marginLeft: '0.5rem',
+    fontSize: '0.875rem',
+  },
+  spinner: {
+    width: '1rem',
+    height: '1rem',
+    borderRadius: theme.radiusFull,
+    borderBottom: `2px solid ${theme.primary}`,
+    animation: 'spin 1s linear infinite',
+  },
+  chevron: {
+    width: '1rem',
+    height: '1rem',
+    color: theme.textSecondary,
+    transition: 'transform 0.2s',
+  },
+  dropdown: {
+    position: 'absolute',
+    zIndex: 50,
+    width: '100%',
+    marginTop: '0.25rem',
+    backgroundColor: theme.cardBackground,
+    border: `1px solid ${theme.cardBorder}`,
+    borderRadius: theme.radius,
+    boxShadow: theme.shadowLarge,
+  },
+  searchWrap: {
+    padding: '0.5rem',
+    borderBottom: `1px solid ${theme.border}`,
+  },
+  searchInner: {
+    position: 'relative',
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: '0.75rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '1rem',
+    height: '1rem',
+    color: theme.textTertiary,
+  },
+  searchInput: {
+    width: '100%',
+    paddingLeft: '2.25rem',
+    paddingRight: '0.75rem',
+    paddingTop: '0.5rem',
+    paddingBottom: '0.5rem',
+    fontSize: '0.875rem',
+    border: `1px solid ${theme.inputBorder}`,
+    borderRadius: theme.radiusSm,
+    backgroundColor: theme.inputBackground,
+    color: theme.inputText,
+    outline: 'none',
+  },
+  optionList: {
+    maxHeight: '16rem',
+    overflowY: 'auto',
+  },
+  option: {
+    width: '100%',
+    padding: '0.5rem 0.75rem',
+    textAlign: 'left',
+    display: 'flex',
+    alignItems: 'center',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    color: theme.text,
+  },
+  optionSymbol: {
+    fontSize: '1.125rem',
+    marginRight: '0.75rem',
+    width: '1.5rem',
+  },
+  optionCode: {
+    fontWeight: '500',
+    marginRight: '0.5rem',
+    color: theme.text,
+  },
+  optionName: {
+    color: theme.textSecondary,
+    fontSize: '0.875rem',
+  },
+  empty: {
+    padding: '1rem 0.75rem',
+    textAlign: 'center',
+    color: theme.textSecondary,
+    fontSize: '0.875rem',
+  },
+});
 
 export default CurrencySelector;

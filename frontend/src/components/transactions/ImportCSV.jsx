@@ -3,9 +3,11 @@ import { ArrowUpTrayIcon, DocumentTextIcon, XMarkIcon } from '@heroicons/react/2
 import { toast } from 'sonner';
 import api from '../../services/api';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useThemedStyles } from '../../hooks/useThemedStyles';
 
 function ImportCSV({ onImportComplete }) {
   const { t } = useLanguage();
+  const styles = useThemedStyles(getStyles);
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
   const [importing, setImporting] = useState(false);
@@ -163,13 +165,13 @@ function ImportCSV({ onImportComplete }) {
                       </div>
                       <div style={styles.statItem}>
                         <span style={styles.statLabel}>{t('import.successful')}</span>
-                        <span style={{ ...styles.statValue, color: '#27ae60' }}>
+                        <span style={{ ...styles.statValue, color: styles.__success }}>
                           {importResult.successfulImports}
                         </span>
                       </div>
                       <div style={styles.statItem}>
                         <span style={styles.statLabel}>{t('import.failed')}</span>
-                        <span style={{ ...styles.statValue, color: '#e74c3c' }}>
+                        <span style={{ ...styles.statValue, color: styles.__danger }}>
                           {importResult.failedImports}
                         </span>
                       </div>
@@ -202,21 +204,25 @@ function ImportCSV({ onImportComplete }) {
   );
 }
 
-const styles = {
+const getStyles = (theme) => ({
+  __success: theme.success,
+  __danger: theme.danger,
   importButton: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-    padding: '0.75rem 1rem',
-    backgroundColor: '#9b59b6',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    padding: '0.65rem 1rem',
+    backgroundColor: theme.primarySoft,
+    color: theme.primary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
+    fontWeight: 600,
+    fontSize: '0.85rem',
   },
   icon: {
-    width: '20px',
-    height: '20px',
+    width: '18px',
+    height: '18px',
   },
   modal: {
     position: 'fixed',
@@ -224,49 +230,59 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: theme.overlay,
+    backdropFilter: 'blur(2px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,
+    padding: '1rem',
   },
   modalContent: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
+    backgroundColor: theme.cardBackground,
+    border: `1px solid ${theme.cardBorder}`,
+    borderRadius: theme.radiusLg,
+    boxShadow: theme.shadowLarge,
     width: '90%',
     maxWidth: '600px',
-    maxHeight: '80vh',
+    maxHeight: '85vh',
     overflow: 'auto',
   },
   modalHeader: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '1.5rem',
-    borderBottom: '1px solid #eee',
+    padding: '1.25rem 1.5rem',
+    borderBottom: `1px solid ${theme.border}`,
   },
   modalTitle: {
     margin: 0,
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
+    fontWeight: 700,
+    color: theme.text,
   },
   closeButton: {
     background: 'none',
     border: 'none',
     cursor: 'pointer',
     padding: '0.5rem',
+    color: theme.textSecondary,
   },
   closeIcon: {
-    width: '24px',
-    height: '24px',
+    width: '22px',
+    height: '22px',
   },
   modalBody: {
     padding: '1.5rem',
+    color: theme.text,
   },
   instructions: {
-    backgroundColor: '#f8f9fa',
-    padding: '1rem',
-    borderRadius: '4px',
+    backgroundColor: theme.backgroundSecondary,
+    border: `1px solid ${theme.border}`,
+    padding: '1rem 1.25rem',
+    borderRadius: theme.radius,
     marginBottom: '1.5rem',
+    color: theme.textSecondary,
   },
   list: {
     margin: '0.5rem 0',
@@ -278,11 +294,12 @@ const styles = {
     gap: '0.5rem',
     marginTop: '1rem',
     padding: '0.5rem 1rem',
-    backgroundColor: '#3498db',
-    color: 'white',
+    backgroundColor: theme.primarySoft,
+    color: theme.primary,
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
+    fontWeight: 600,
   },
   smallIcon: {
     width: '16px',
@@ -296,12 +313,13 @@ const styles = {
   },
   fileLabel: {
     display: 'block',
-    padding: '1rem',
-    border: '2px dashed #ddd',
-    borderRadius: '4px',
+    padding: '1.25rem',
+    border: `2px dashed ${theme.inputBorder}`,
+    borderRadius: theme.radius,
     textAlign: 'center',
     cursor: 'pointer',
     transition: 'all 0.2s',
+    color: theme.textSecondary,
   },
   modalFooter: {
     display: 'flex',
@@ -309,20 +327,22 @@ const styles = {
     justifyContent: 'flex-end',
   },
   importConfirmButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#27ae60',
-    color: 'white',
+    padding: '0.7rem 1.5rem',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
+    fontWeight: 600,
   },
   cancelButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#95a5a6',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    padding: '0.7rem 1.5rem',
+    backgroundColor: theme.backgroundSecondary,
+    color: theme.textSecondary,
+    border: `1px solid ${theme.border}`,
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
+    fontWeight: 600,
   },
   results: {
     marginBottom: '1.5rem',
@@ -338,36 +358,38 @@ const styles = {
     flexDirection: 'column',
   },
   statLabel: {
-    fontSize: '0.875rem',
-    color: '#666',
+    fontSize: '0.8rem',
+    color: theme.textSecondary,
   },
   statValue: {
     fontSize: '1.5rem',
-    fontWeight: 'bold',
+    fontWeight: 700,
+    color: theme.text,
   },
   errors: {
-    backgroundColor: '#fff5f5',
+    backgroundColor: theme.dangerSoft,
     padding: '1rem',
-    borderRadius: '4px',
-    border: '1px solid #ffdddd',
+    borderRadius: theme.radius,
+    border: `1px solid ${theme.danger}33`,
   },
   errorList: {
     margin: '0.5rem 0',
     paddingLeft: '1.5rem',
-    fontSize: '0.875rem',
-    color: '#e74c3c',
+    fontSize: '0.85rem',
+    color: theme.danger,
   },
   errorItem: {
     marginBottom: '0.25rem',
   },
   doneButton: {
-    padding: '0.75rem 1.5rem',
-    backgroundColor: '#3498db',
-    color: 'white',
+    padding: '0.7rem 1.5rem',
+    background: theme.gradient,
+    color: '#ffffff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
+    fontWeight: 600,
   },
-};
+});
 
 export default ImportCSV;

@@ -1,59 +1,130 @@
+// Modern design tokens — emerald "financial" theme.
+// Existing keys are preserved so every component that reads from `theme`
+// is restyled automatically; new keys power the redesigned components.
+
+const shared = {
+  // Typography
+  fontFamily:
+    "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  fontMono:
+    "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+
+  // Radius scale
+  radiusSm: '8px',
+  radius: '12px',
+  radiusLg: '16px',
+  radiusXl: '20px',
+  radiusFull: '9999px',
+
+  // Brand gradient
+  gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+};
+
 export const lightTheme = {
-  background: '#ffffff',
-  backgroundSecondary: '#f8f9fa',
-  backgroundTertiary: '#e9ecef',
+  ...shared,
 
-  text: '#2c3e50',
-  textSecondary: '#666666',
-  textTertiary: '#888888',
+  background: '#f5f7f6',
+  backgroundSecondary: '#eef2f0',
+  backgroundTertiary: '#e4eae7',
 
-  border: '#dee2e6',
-  borderLight: '#e9ecef',
+  text: '#0f1f1a',
+  textSecondary: '#566b63',
+  textTertiary: '#8a9c95',
+
+  border: '#e5ebe8',
+  borderLight: '#eef2f0',
 
   cardBackground: '#ffffff',
-  cardBorder: '#dee2e6',
+  cardBorder: '#e8edeb',
 
   inputBackground: '#ffffff',
-  inputBorder: '#ced4da',
-  inputText: '#495057',
+  inputBorder: '#d6dedb',
+  inputText: '#15261f',
 
-  primary: '#3498db',
-  success: '#27ae60',
-  danger: '#e74c3c',
-  warning: '#f39c12',
-  info: '#3498db',
+  primary: '#059669',
+  primaryHover: '#047857',
+  primaryStrong: '#065f46',
+  primarySoft: '#ecfdf5',
+  onPrimary: '#ffffff',
 
-  shadow: '0 2px 4px rgba(0,0,0,0.1)',
-  shadowLarge: '0 4px 6px rgba(0,0,0,0.1)',
+  success: '#059669',
+  successSoft: '#d1fae5',
+  danger: '#dc2626',
+  dangerSoft: '#fee2e2',
+  warning: '#d97706',
+  warningSoft: '#fef3c7',
+  info: '#0891b2',
+  infoSoft: '#cffafe',
+
+  // Aliases consumed by older components (kept so they render correctly)
+  primaryLight: '#ecfdf5',
+  primaryShadow: 'rgba(5, 150, 105, 0.25)',
+  secondary: '#566b63',
+  errorBackground: '#fee2e2',
+  errorBorder: '#fecaca',
+  errorText: '#dc2626',
+  warningBackground: '#fef3c7',
+  warningText: '#92400e',
+
+  shadow:
+    '0 1px 2px rgba(16, 31, 26, 0.04), 0 2px 8px rgba(16, 31, 26, 0.06)',
+  shadowLarge: '0 8px 28px rgba(16, 31, 26, 0.12)',
+  shadowHover: '0 6px 20px rgba(16, 31, 26, 0.10)',
+
+  overlay: 'rgba(15, 31, 26, 0.45)',
 };
 
 export const darkTheme = {
-  background: '#1a1a1a',
-  backgroundSecondary: '#2d2d2d',
-  backgroundTertiary: '#3a3a3a',
+  ...shared,
 
-  text: '#e0e0e0',
-  textSecondary: '#a0a0a0',
-  textTertiary: '#808080',
+  background: '#0b1310',
+  backgroundSecondary: '#101b15',
+  backgroundTertiary: '#17251e',
 
-  border: '#404040',
-  borderLight: '#333333',
+  text: '#e8efeb',
+  textSecondary: '#9bada5',
+  textTertiary: '#6b7d75',
 
-  cardBackground: '#2d2d2d',
-  cardBorder: '#404040',
+  border: '#1f2e26',
+  borderLight: '#18241e',
 
-  inputBackground: '#333333',
-  inputBorder: '#404040',
-  inputText: '#e0e0e0',
+  cardBackground: '#13201a',
+  cardBorder: '#22322a',
 
-  primary: '#3498db',
-  success: '#27ae60',
-  danger: '#e74c3c',
-  warning: '#f39c12',
-  info: '#3498db',
+  inputBackground: '#17241d',
+  inputBorder: '#2a3b32',
+  inputText: '#e8efeb',
 
-  shadow: '0 2px 4px rgba(0,0,0,0.3)',
-  shadowLarge: '0 4px 6px rgba(0,0,0,0.4)',
+  primary: '#10b981',
+  primaryHover: '#34d399',
+  primaryStrong: '#059669',
+  primarySoft: 'rgba(16, 185, 129, 0.14)',
+  onPrimary: '#04130d',
+
+  success: '#34d399',
+  successSoft: 'rgba(52, 211, 153, 0.15)',
+  danger: '#f87171',
+  dangerSoft: 'rgba(248, 113, 113, 0.15)',
+  warning: '#fbbf24',
+  warningSoft: 'rgba(251, 191, 36, 0.15)',
+  info: '#22d3ee',
+  infoSoft: 'rgba(34, 211, 238, 0.15)',
+
+  // Aliases consumed by older components (kept so they render correctly)
+  primaryLight: 'rgba(16, 185, 129, 0.14)',
+  primaryShadow: 'rgba(16, 185, 129, 0.35)',
+  secondary: '#9bada5',
+  errorBackground: 'rgba(248, 113, 113, 0.15)',
+  errorBorder: 'rgba(248, 113, 113, 0.4)',
+  errorText: '#f87171',
+  warningBackground: 'rgba(251, 191, 36, 0.15)',
+  warningText: '#fbbf24',
+
+  shadow: '0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(0, 0, 0, 0.35)',
+  shadowLarge: '0 10px 30px rgba(0, 0, 0, 0.5)',
+  shadowHover: '0 8px 24px rgba(0, 0, 0, 0.45)',
+
+  overlay: 'rgba(0, 0, 0, 0.6)',
 };
 
 export const getTheme = (theme) => {

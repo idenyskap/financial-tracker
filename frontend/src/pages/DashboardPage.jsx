@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '../services/dashboardService';
 import { analyticsService } from '../services/analyticsService';
-import StatsCard from '../components/dashboard/StatsCard';
 import ExpenseIncomeChart from '../components/charts/ExpenseIncomeChart';
 import CategoryPieChart from '../components/charts/CategoryPieChart';
 import CategoryMonthlyChart from '../components/charts/CategoryMonthlyChart';
@@ -9,10 +8,21 @@ import GoalsWidget from '../components/dashboard/GoalsWidget';
 import { useThemedStyles } from '../hooks/useThemedStyles';
 import { useCurrency } from '../hooks/useCurrency';
 import { useLanguage } from '../hooks/useLanguage';
+import {
+  WalletIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  ScaleIcon,
+  ClockIcon,
+  ChartPieIcon,
+  ChartBarIcon,
+  TrophyIcon,
+  Squares2X2Icon,
+} from '@heroicons/react/24/outline';
 
 function DashboardPage() {
   const styles = useThemedStyles(getStyles);
-  const { formatCurrency, formatDualCurrency } = useCurrency();
+  const { formatDualCurrency } = useCurrency();
   const { t } = useLanguage();
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard'],
@@ -32,11 +42,10 @@ function DashboardPage() {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div style={styles.error}>
-        <span style={styles.errorIcon}></span>
         <p>{t('dashboard.errorMessage')}</p>
       </div>
     );
@@ -44,183 +53,178 @@ function DashboardPage() {
 
   const dashboard = data?.data;
 
-
   const formatPercent = (value) => {
     const formatted = Math.abs(value || 0).toFixed(1);
     return value >= 0 ? `+${formatted}%` : `-${formatted}%`;
   };
 
+  const monthlyBalancePositive = (dashboard?.monthlyBalance ?? 0) >= 0;
+  const maxCategoryAmount = Math.max(
+    1,
+    ...(dashboard?.topExpenseCategories?.map((c) => c.totalAmount) || [0])
+  );
+
+  const stats = [
+    {
+      label: t('dashboard.currentBalance'),
+      value: formatDualCurrency(dashboard?.currentBalance),
+      icon: WalletIcon,
+      accent: styles.__primary,
+      change: null,
+    },
+    {
+      label: t('dashboard.monthlyIncome'),
+      value: formatDualCurrency(dashboard?.monthlyIncome),
+      icon: ArrowTrendingUpIcon,
+      accent: styles.__success,
+      change: { value: dashboard?.incomeChangePercent, positive: (dashboard?.incomeChangePercent ?? 0) >= 0 },
+    },
+    {
+      label: t('dashboard.monthlyExpenses'),
+      value: formatDualCurrency(dashboard?.monthlyExpense),
+      icon: ArrowTrendingDownIcon,
+      accent: styles.__danger,
+      change: { value: dashboard?.expenseChangePercent, positive: (dashboard?.expenseChangePercent ?? 0) <= 0 },
+    },
+    {
+      label: t('dashboard.monthlyBalance'),
+      value: formatDualCurrency(dashboard?.monthlyBalance),
+      icon: ScaleIcon,
+      accent: monthlyBalancePositive ? styles.__success : styles.__danger,
+      change: null,
+    },
+  ];
+
   return (
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
-        <div style={styles.headerContent}>
-          <h1 style={styles.title}>{t('dashboard.title')}</h1>
-          <p style={styles.subtitle}>{t('dashboard.subtitle')}</p>
-        </div>
+        <h1 style={styles.title}>{t('dashboard.title')}</h1>
+        <p style={styles.subtitle}>{t('dashboard.subtitle')}</p>
       </div>
 
       {/* Stats Cards */}
-      <div style={styles.statsSection}>
-        <div style={styles.statsGrid}>
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <div style={styles.statInfo}>
-                <span style={styles.statIcon}></span>
-                <span style={styles.statTitle}>{t('dashboard.currentBalance')}</span>
+      <div style={styles.statsGrid}>
+        {stats.map((stat, i) => {
+          const Icon = stat.icon;
+          return (
+            <div key={i} style={styles.statCard}>
+              <div style={styles.statTop}>
+                <span style={styles.statTitle}>{stat.label}</span>
+                <span style={{ ...styles.statIconChip, backgroundColor: `${stat.accent}1f`, color: stat.accent }}>
+                  <Icon style={styles.statIconSvg} />
+                </span>
               </div>
+              <span style={{ ...styles.statValue, color: stat.accent }}>{stat.value}</span>
+              {stat.change && (
+                <span
+                  style={{
+                    ...styles.statChange,
+                    color: stat.change.positive ? styles.__success : styles.__danger,
+                    backgroundColor: stat.change.positive ? styles.__successSoft : styles.__dangerSoft,
+                  }}
+                >
+                  {formatPercent(stat.change.value)} · {t('dashboard.fromLastMonth')}
+                </span>
+              )}
             </div>
-            <div style={styles.statContent}>
-              <span style={styles.statValue}>{formatDualCurrency(dashboard?.currentBalance)}</span>
-            </div>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <div style={styles.statInfo}>
-                <span style={styles.statIcon}></span>
-                <span style={styles.statTitle}>{t('dashboard.monthlyIncome')}</span>
-              </div>
-            </div>
-            <div style={styles.statContent}>
-              <span style={{...styles.statValue, color: '#10b981'}}>{formatDualCurrency(dashboard?.monthlyIncome)}</span>
-              <span style={styles.statChange}>
-                {formatPercent(dashboard?.incomeChangePercent)} {t('dashboard.fromLastMonth')}
-              </span>
-            </div>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <div style={styles.statInfo}>
-                <span style={styles.statIcon}></span>
-                <span style={styles.statTitle}>{t('dashboard.monthlyExpenses')}</span>
-              </div>
-            </div>
-            <div style={styles.statContent}>
-              <span style={{...styles.statValue, color: '#ef4444'}}>{formatDualCurrency(dashboard?.monthlyExpense)}</span>
-              <span style={styles.statChange}>
-                {formatPercent(dashboard?.expenseChangePercent)} {t('dashboard.fromLastMonth')}
-              </span>
-            </div>
-          </div>
-
-          <div style={styles.statCard}>
-            <div style={styles.statHeader}>
-              <div style={styles.statInfo}>
-                <span style={styles.statIcon}></span>
-                <span style={styles.statTitle}>{t('dashboard.monthlyBalance')}</span>
-              </div>
-            </div>
-            <div style={styles.statContent}>
-              <span style={{
-                ...styles.statValue, 
-                color: dashboard?.monthlyBalance >= 0 ? '#10b981' : '#ef4444'
-              }}>
-                {formatDualCurrency(dashboard?.monthlyBalance)}
-              </span>
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* Recent Transactions */}
-      <div style={styles.contentCard}>
-        <div style={styles.cardHeader}>
-          <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}></span>
-            {t('dashboard.recentTransactions')}
-          </h3>
-        </div>
-        <div style={styles.cardContent}>
-          {dashboard?.recentTransactions?.length > 0 ? (
-            <div style={styles.transactionsList}>
-              {dashboard.recentTransactions.map((transaction) => (
-                <div key={transaction.id} style={styles.transactionItem}>
-                  <div style={styles.transactionLeft}>
-                    <div
+      {/* Two-column: recent transactions + top categories */}
+      <div style={styles.twoCol}>
+        {/* Recent Transactions */}
+        <div style={styles.contentCard}>
+          <div style={styles.cardHeader}>
+            <h3 style={styles.cardTitle}>
+              <ClockIcon style={styles.cardIcon} />
+              {t('dashboard.recentTransactions')}
+            </h3>
+          </div>
+          <div style={styles.cardContent}>
+            {dashboard?.recentTransactions?.length > 0 ? (
+              <div style={styles.list}>
+                {dashboard.recentTransactions.map((transaction) => (
+                  <div key={transaction.id} style={styles.row}>
+                    <div style={styles.rowLeft}>
+                      <div
+                        style={{
+                          ...styles.dot,
+                          backgroundColor: transaction.categoryColor || styles.__primary,
+                        }}
+                      />
+                      <div>
+                        <p style={styles.rowTitle}>{transaction.categoryName}</p>
+                        <p style={styles.rowMeta}>
+                          {transaction.description || t('dashboard.noDescription')}
+                          {'  ·  '}
+                          {new Date(transaction.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <span
                       style={{
-                        ...styles.categoryIndicator,
-                        backgroundColor: transaction.categoryColor,
+                        ...styles.amount,
+                        color: transaction.type === 'INCOME' ? styles.__success : styles.__danger,
                       }}
-                    />
-                    <div style={styles.transactionDetails}>
-                      <p style={styles.transactionCategory}>{transaction.categoryName}</p>
-                      <p style={styles.transactionDescription}>
-                        {transaction.description || t('dashboard.noDescription')}
-                      </p>
-                      <p style={styles.transactionDate}>
-                        {new Date(transaction.date).toLocaleDateString()}
-                      </p>
-                    </div>
+                    >
+                      {transaction.type === 'INCOME' ? '+' : '-'}
+                      {formatDualCurrency(transaction.amount)}
+                    </span>
                   </div>
-                  <div style={styles.transactionRight}>
-                    <div style={styles.transactionAmount}>
-                      <span style={{
-                        ...styles.amountText,
-                        color: transaction.type === 'INCOME' ? '#10b981' : '#ef4444'
-                      }}>
-                        {transaction.type === 'INCOME' ? '+' : '-'}
-                        {formatDualCurrency(transaction.amount)}
-                      </span>
-                      <span style={styles.transactionType}>
-                        {transaction.type === 'INCOME' ? '' : ''}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}></div>
-              <p style={styles.emptyText}>{t('dashboard.noRecentTransactions')}</p>
-              <p style={styles.emptySubtext}>{t('dashboard.recentTransactionsSubtext')}</p>
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div style={styles.emptyState}>
+                <p style={styles.emptyText}>{t('dashboard.noRecentTransactions')}</p>
+                <p style={styles.emptySubtext}>{t('dashboard.recentTransactionsSubtext')}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Top Expense Categories */}
-      <div style={styles.contentCard}>
-        <div style={styles.cardHeader}>
-          <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}></span>
-            {t('dashboard.topExpenseCategories')}
-          </h3>
-        </div>
-        <div style={styles.cardContent}>
-          {dashboard?.topExpenseCategories?.length > 0 ? (
-            <div style={styles.categoriesList}>
-              {dashboard.topExpenseCategories.map((category) => (
-                <div key={category.categoryId} style={styles.categoryItem}>
-                  <div style={styles.categoryInfo}>
-                    <div
-                      style={{
-                        ...styles.categoryIndicator,
-                        backgroundColor: category.categoryColor,
-                      }}
-                    />
-                    <span style={styles.categoryName}>{category.categoryName}</span>
+        {/* Top Expense Categories */}
+        <div style={styles.contentCard}>
+          <div style={styles.cardHeader}>
+            <h3 style={styles.cardTitle}>
+              <Squares2X2Icon style={styles.cardIcon} />
+              {t('dashboard.topExpenseCategories')}
+            </h3>
+          </div>
+          <div style={styles.cardContent}>
+            {dashboard?.topExpenseCategories?.length > 0 ? (
+              <div style={styles.list}>
+                {dashboard.topExpenseCategories.map((category) => (
+                  <div key={category.categoryId} style={styles.catItem}>
+                    <div style={styles.catTop}>
+                      <span style={styles.catName}>
+                        <span
+                          style={{ ...styles.dot, backgroundColor: category.categoryColor || styles.__primary }}
+                        />
+                        {category.categoryName}
+                      </span>
+                      <span style={styles.catAmount}>{formatDualCurrency(category.totalAmount)}</span>
+                    </div>
+                    <div style={styles.progressTrack}>
+                      <div
+                        style={{
+                          ...styles.progressFill,
+                          width: `${Math.max(4, (category.totalAmount / maxCategoryAmount) * 100)}%`,
+                          backgroundColor: category.categoryColor || styles.__primary,
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div style={styles.categoryStats}>
-                    <span style={styles.categoryAmount}>
-                      {formatDualCurrency(category.totalAmount)}
-                    </span>
-                    <span style={styles.categoryPercent}>
-                      {category.percentage?.toFixed(1)}%
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={styles.emptyState}>
-              <div style={styles.emptyIcon}></div>
-              <p style={styles.emptyText}>{t('dashboard.noExpenseCategories')}</p>
-              <p style={styles.emptySubtext}>{t('dashboard.expenseCategoriesSubtext')}</p>
-            </div>
-          )}
+                ))}
+              </div>
+            ) : (
+              <div style={styles.emptyState}>
+                <p style={styles.emptyText}>{t('dashboard.noExpenseCategories')}</p>
+                <p style={styles.emptySubtext}>{t('dashboard.expenseCategoriesSubtext')}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -228,7 +232,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}></span>
+            <ChartBarIcon style={styles.cardIcon} />
             {t('dashboard.financialAnalytics')}
           </h3>
         </div>
@@ -241,7 +245,7 @@ function DashboardPage() {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}></span>
+              <ChartPieIcon style={styles.cardIcon} />
               {t('dashboard.expenseDistribution')}
             </h3>
           </div>
@@ -259,7 +263,7 @@ function DashboardPage() {
         <div style={styles.contentCard}>
           <div style={styles.cardHeader}>
             <h3 style={styles.cardTitle}>
-              <span style={styles.cardIcon}></span>
+              <ChartBarIcon style={styles.cardIcon} />
               {t('analytics.categoryMonthlyTrends')}
             </h3>
           </div>
@@ -273,7 +277,7 @@ function DashboardPage() {
       <div style={styles.contentCard}>
         <div style={styles.cardHeader}>
           <h3 style={styles.cardTitle}>
-            <span style={styles.cardIcon}></span>
+            <TrophyIcon style={styles.cardIcon} />
             {t('dashboard.financialGoals')}
           </h3>
         </div>
@@ -283,42 +287,32 @@ function DashboardPage() {
       </div>
     </div>
   );
-
 }
 
 const getStyles = (theme, { isMobile } = {}) => ({
+  __primary: theme.primary,
+  __success: theme.success,
+  __danger: theme.danger,
+  __successSoft: theme.successSoft,
+  __dangerSoft: theme.dangerSoft,
   container: {
-    padding: isMobile ? '1rem' : '1.5rem',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    backgroundColor: theme.background,
-    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: isMobile ? '1rem' : '1.5rem',
   },
   header: {
-    display: 'flex',
-    flexDirection: isMobile ? 'column' : 'row',
-    justifyContent: 'space-between',
-    alignItems: isMobile ? 'stretch' : 'flex-start',
-    marginBottom: isMobile ? '1rem' : '2rem',
-    padding: isMobile ? '1rem' : '1.5rem',
-    backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
-    boxShadow: theme.shadow,
-    border: `1px solid ${theme.cardBorder}`,
-  },
-  headerContent: {
-    flex: 1,
+    marginBottom: '0.25rem',
   },
   title: {
-    fontSize: isMobile ? '1.5rem' : '2rem',
-    fontWeight: '700',
+    fontSize: isMobile ? '1.5rem' : '1.875rem',
+    fontWeight: 700,
+    letterSpacing: '-0.02em',
     color: theme.text,
-    marginBottom: '0.5rem',
-    margin: 0,
+    margin: '0 0 0.35rem 0',
   },
   subtitle: {
     color: theme.textSecondary,
-    fontSize: isMobile ? '0.875rem' : '1rem',
+    fontSize: '0.95rem',
     margin: 0,
   },
   loading: {
@@ -326,20 +320,16 @@ const getStyles = (theme, { isMobile } = {}) => ({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '3rem',
-    backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
-    boxShadow: theme.shadow,
-    border: `1px solid ${theme.cardBorder}`,
-    color: theme.text,
+    padding: '4rem',
+    color: theme.textSecondary,
   },
   loadingSpinner: {
     width: '40px',
     height: '40px',
-    border: `4px solid ${theme.borderLight}`,
-    borderTop: `4px solid ${theme.primary}`,
+    border: `3px solid ${theme.borderLight}`,
+    borderTopColor: theme.primary,
     borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
+    animation: 'spin 0.8s linear infinite',
     marginBottom: '1rem',
   },
   error: {
@@ -349,219 +339,198 @@ const getStyles = (theme, { isMobile } = {}) => ({
     justifyContent: 'center',
     padding: '3rem',
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radiusLg,
     boxShadow: theme.shadow,
     border: `1px solid ${theme.cardBorder}`,
     color: theme.danger,
   },
-  errorIcon: {
-    fontSize: '2rem',
-    marginBottom: '1rem',
-  },
-  statsSection: {
-    marginBottom: isMobile ? '1rem' : '2rem',
-  },
   statsGrid: {
     display: 'grid',
-    gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: isMobile ? '1rem' : '1.5rem',
+    gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: isMobile ? '0.75rem' : '1.25rem',
   },
   statCard: {
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
-    padding: isMobile ? '1rem' : '1.5rem',
+    borderRadius: theme.radiusLg,
+    padding: isMobile ? '1rem' : '1.4rem',
     boxShadow: theme.shadow,
     border: `1px solid ${theme.cardBorder}`,
-    transition: 'all 0.2s ease',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.6rem',
   },
-  statHeader: {
+  statTop: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-  statInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-  },
-  statIcon: {
-    fontSize: '1.5rem',
+    alignItems: 'flex-start',
+    gap: '0.5rem',
   },
   statTitle: {
-    fontSize: '0.875rem',
-    fontWeight: '600',
+    fontSize: '0.75rem',
+    fontWeight: 600,
     color: theme.textSecondary,
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   },
-  statContent: {
+  statIconChip: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '11px',
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  statIconSvg: {
+    width: '19px',
+    height: '19px',
   },
   statValue: {
-    fontSize: '1.875rem',
-    fontWeight: '700',
-    color: theme.text,
-    lineHeight: '1.2',
+    fontSize: isMobile ? '1.4rem' : '1.75rem',
+    fontWeight: 700,
+    letterSpacing: '-0.02em',
+    lineHeight: 1.1,
   },
   statChange: {
-    fontSize: '0.75rem',
-    color: theme.textSecondary,
-    fontWeight: '500',
+    alignSelf: 'flex-start',
+    fontSize: '0.72rem',
+    fontWeight: 600,
+    padding: '0.2rem 0.5rem',
+    borderRadius: theme.radiusFull,
+  },
+  twoCol: {
+    display: 'grid',
+    gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+    gap: isMobile ? '1rem' : '1.5rem',
   },
   contentCard: {
     backgroundColor: theme.cardBackground,
-    borderRadius: '12px',
+    borderRadius: theme.radiusLg,
     boxShadow: theme.shadow,
-    marginBottom: '2rem',
     overflow: 'hidden',
     border: `1px solid ${theme.cardBorder}`,
   },
   cardHeader: {
-    padding: '1.5rem 1.5rem 1rem',
+    padding: '1.1rem 1.4rem',
     borderBottom: `1px solid ${theme.border}`,
-    backgroundColor: theme.backgroundSecondary,
   },
   cardTitle: {
     display: 'flex',
     alignItems: 'center',
-    gap: '0.75rem',
-    fontSize: '1.25rem',
-    fontWeight: '600',
+    gap: '0.6rem',
+    fontSize: '1rem',
+    fontWeight: 700,
+    letterSpacing: '-0.01em',
     color: theme.text,
     margin: 0,
   },
   cardIcon: {
-    fontSize: '1.5rem',
+    width: '18px',
+    height: '18px',
+    color: theme.primary,
   },
   cardContent: {
-    padding: '1.5rem',
+    padding: '0.75rem 1.4rem 1.1rem',
   },
-  transactionsList: {
+  list: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '0',
   },
-  transactionItem: {
+  row: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '1rem 0',
+    gap: '0.75rem',
+    padding: '0.85rem 0',
     borderBottom: `1px solid ${theme.borderLight}`,
   },
-  transactionLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    flex: 1,
-  },
-  categoryIndicator: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '3px',
-    flexShrink: 0,
-  },
-  transactionDetails: {
-    flex: 1,
-  },
-  transactionCategory: {
-    fontWeight: '600',
-    color: theme.text,
-    margin: '0 0 0.25rem 0',
-    fontSize: '1rem',
-  },
-  transactionDescription: {
-    fontSize: '0.875rem',
-    color: theme.textSecondary,
-    margin: '0 0 0.25rem 0',
-  },
-  transactionDate: {
-    fontSize: '0.75rem',
-    color: theme.textTertiary,
-    margin: 0,
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  transactionRight: {
+  rowLeft: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.75rem',
+    minWidth: 0,
+    flex: 1,
   },
-  transactionAmount: {
+  dot: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    flexShrink: 0,
+    display: 'inline-block',
+  },
+  rowTitle: {
+    fontWeight: 600,
+    color: theme.text,
+    margin: '0 0 0.15rem 0',
+    fontSize: '0.9rem',
+  },
+  rowMeta: {
+    fontSize: '0.8rem',
+    color: theme.textTertiary,
+    margin: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  amount: {
+    fontSize: '0.95rem',
+    fontWeight: 700,
+    whiteSpace: 'nowrap',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  catItem: {
+    padding: '0.7rem 0',
+    borderBottom: `1px solid ${theme.borderLight}`,
+  },
+  catTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '0.5rem',
+  },
+  catName: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-  },
-  amountText: {
-    fontSize: '1.125rem',
-    fontWeight: '700',
-  },
-  transactionType: {
-    fontSize: '1.25rem',
-  },
-  categoriesList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0',
-  },
-  categoryItem: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '1rem 0',
-    borderBottom: `1px solid ${theme.borderLight}`,
-  },
-  categoryInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    flex: 1,
-  },
-  categoryName: {
-    fontWeight: '600',
+    fontWeight: 600,
     color: theme.text,
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
-  categoryStats: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    textAlign: 'right',
-  },
-  categoryAmount: {
-    fontWeight: '600',
-    color: theme.text,
-    fontSize: '1rem',
-  },
-  categoryPercent: {
-    fontSize: '0.875rem',
+  catAmount: {
+    fontWeight: 600,
     color: theme.textSecondary,
-    fontWeight: '500',
+    fontSize: '0.85rem',
+    fontVariantNumeric: 'tabular-nums',
+  },
+  progressTrack: {
+    height: '7px',
+    borderRadius: theme.radiusFull,
+    backgroundColor: theme.backgroundTertiary,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: theme.radiusFull,
+    transition: 'width 0.4s ease',
   },
   emptyState: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '3rem',
+    padding: '2.5rem 1rem',
     textAlign: 'center',
   },
-  emptyIcon: {
-    fontSize: '3rem',
-    marginBottom: '1rem',
-    opacity: 0.5,
-  },
   emptyText: {
-    fontSize: '1.125rem',
-    fontWeight: '600',
+    fontSize: '1rem',
+    fontWeight: 600,
     color: theme.text,
-    marginBottom: '0.5rem',
+    margin: '0 0 0.35rem 0',
   },
   emptySubtext: {
     color: theme.textSecondary,
-    fontSize: '0.875rem',
+    fontSize: '0.85rem',
+    margin: 0,
   },
 });
 

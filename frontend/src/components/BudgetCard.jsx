@@ -1,20 +1,21 @@
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { useCurrency } from '../hooks/useCurrency';
 import { useLanguage } from '../hooks/useLanguage';
+import { useThemedStyles } from '../hooks/useThemedStyles';
 
 function BudgetCard({ budget, onEdit, onDelete }) {
   const { formatCurrency } = useCurrency();
   const { t } = useLanguage();
+  const styles = useThemedStyles(getStyles);
   const percentage = budget.spent && budget.amount
     ? (budget.spent / budget.amount) * 100
     : 0;
 
   const getProgressColor = () => {
-    if (percentage >= 100) return '#e74c3c';
-    if (percentage >= budget.notifyThreshold) return '#f39c12';
-    return '#27ae60';
+    if (percentage >= 100) return styles.__danger;
+    if (percentage >= budget.notifyThreshold) return styles.__warning;
+    return styles.__success;
   };
-
 
   const isOverBudget = percentage > 100;
   const isNearLimit = percentage >= budget.notifyThreshold;
@@ -22,7 +23,7 @@ function BudgetCard({ budget, onEdit, onDelete }) {
   return (
     <div style={{
       ...styles.card,
-      borderColor: isOverBudget ? '#e74c3c' : styles.card.borderColor,
+      ...(isOverBudget ? styles.cardDanger : {}),
     }}>
       <div style={styles.header}>
         <div style={styles.titleSection}>
@@ -36,7 +37,7 @@ function BudgetCard({ budget, onEdit, onDelete }) {
           <button onClick={() => onEdit(budget)} style={styles.actionButton}>
             {t('common.edit')}
           </button>
-          <button onClick={() => onDelete(budget.id)} style={{...styles.actionButton, ...styles.deleteButton}}>
+          <button onClick={() => onDelete(budget.id)} style={{ ...styles.actionButton, ...styles.deleteButton }}>
             {t('common.delete')}
           </button>
         </div>
@@ -45,8 +46,8 @@ function BudgetCard({ budget, onEdit, onDelete }) {
       {(isOverBudget || isNearLimit) && (
         <div style={{
           ...styles.alert,
-          backgroundColor: isOverBudget ? '#fee' : '#fef3cd',
-          color: isOverBudget ? '#e74c3c' : '#856404',
+          backgroundColor: isOverBudget ? styles.__dangerSoft : styles.__warningSoft,
+          color: isOverBudget ? styles.__danger : styles.__warningText,
         }}>
           <ExclamationTriangleIcon style={styles.alertIcon} />
           {isOverBudget
@@ -87,14 +88,23 @@ function BudgetCard({ budget, onEdit, onDelete }) {
   );
 }
 
-const styles = {
+const getStyles = (theme) => ({
+  __danger: theme.danger,
+  __success: theme.success,
+  __warning: theme.warning,
+  __dangerSoft: theme.dangerSoft,
+  __warningSoft: theme.warningSoft,
+  __warningText: theme.warningText,
   card: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
+    backgroundColor: theme.cardBackground,
+    borderRadius: theme.radiusLg,
     padding: '1.5rem',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    border: '2px solid transparent',
+    boxShadow: theme.shadow,
+    border: `1px solid ${theme.cardBorder}`,
     position: 'relative',
+  },
+  cardDanger: {
+    borderColor: theme.danger,
   },
   header: {
     display: 'flex',
@@ -107,97 +117,108 @@ const styles = {
   },
   name: {
     margin: '0 0 0.25rem 0',
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    color: '#2c3e50',
+    fontSize: '1.1rem',
+    fontWeight: 600,
+    color: theme.text,
   },
   category: {
-    fontSize: '0.875rem',
-    color: '#666',
+    fontSize: '0.8rem',
+    color: theme.textSecondary,
   },
   actions: {
     display: 'flex',
     gap: '0.5rem',
   },
   actionButton: {
-    padding: '0.5rem 0.75rem',
-    backgroundColor: '#3498db',
-    color: 'white',
+    padding: '0.4rem 0.75rem',
+    backgroundColor: theme.primarySoft,
+    color: theme.primary,
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: theme.radiusSm,
     cursor: 'pointer',
     fontSize: '0.75rem',
-    fontWeight: '500',
+    fontWeight: 600,
   },
   deleteButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: theme.dangerSoft,
+    color: theme.danger,
   },
   alert: {
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-    padding: '0.75rem',
-    borderRadius: '4px',
+    padding: '0.7rem 0.85rem',
+    borderRadius: theme.radiusSm,
     marginBottom: '1rem',
-    fontSize: '0.875rem',
+    fontSize: '0.82rem',
+    fontWeight: 500,
   },
   alertIcon: {
-    width: '20px',
-    height: '20px',
+    width: '18px',
+    height: '18px',
+    flexShrink: 0,
   },
   amounts: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'baseline',
     marginBottom: '0.75rem',
+    gap: '0.5rem',
+    flexWrap: 'wrap',
   },
   spent: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    color: '#2c3e50',
+    fontSize: '1.4rem',
+    fontWeight: 700,
+    color: theme.text,
+    letterSpacing: '-0.02em',
   },
   of: {
-    color: '#666',
-    fontSize: '0.875rem',
+    color: theme.textSecondary,
+    fontSize: '0.8rem',
   },
   limit: {
-    fontSize: '1rem',
-    color: '#666',
+    fontSize: '0.95rem',
+    color: theme.textSecondary,
   },
   remaining: {
-    fontSize: '0.875rem',
-    color: '#27ae60',
+    fontSize: '0.8rem',
+    color: theme.success,
+    fontWeight: 600,
   },
   progressContainer: {
     marginBottom: '1rem',
   },
   progressBar: {
     height: '8px',
-    backgroundColor: '#e9ecef',
-    borderRadius: '4px',
+    backgroundColor: theme.backgroundTertiary,
+    borderRadius: theme.radiusFull,
     overflow: 'hidden',
-    marginBottom: '0.25rem',
+    marginBottom: '0.35rem',
   },
   progressFill: {
     height: '100%',
-    transition: 'width 0.3s ease',
+    borderRadius: theme.radiusFull,
+    transition: 'width 0.4s ease',
   },
   percentage: {
-    fontSize: '0.75rem',
-    color: '#666',
+    fontSize: '0.72rem',
+    color: theme.textSecondary,
+    fontWeight: 600,
   },
   period: {
     display: 'flex',
     justifyContent: 'space-between',
-    fontSize: '0.875rem',
+    fontSize: '0.82rem',
+    paddingTop: '0.75rem',
+    borderTop: `1px solid ${theme.borderLight}`,
   },
   periodLabel: {
-    color: '#666',
+    color: theme.textSecondary,
   },
   periodValue: {
-    fontWeight: '500',
-    color: '#2c3e50',
+    fontWeight: 600,
+    color: theme.text,
   },
-};
+});
 
 export default BudgetCard;
