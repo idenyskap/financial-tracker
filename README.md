@@ -192,12 +192,17 @@ Key entities managed by the application:
 
 ## Testing
 
-Run backend tests:
+**Backend** — JUnit 5, Mockito and Spring Boot Test. Integration tests use
+**Testcontainers** (spins up a real PostgreSQL in Docker), so Docker must be
+running. Service-layer coverage spans budgets, categories, currency, goals,
+recurring transactions, transactions and users.
+
 ```bash
-./mvnw test
+./mvnw test     # runs the full suite
 ```
 
-Run frontend linting:
+**Frontend** — no unit-test framework is configured yet; only ESLint:
+
 ```bash
 cd frontend
 npm run lint
@@ -258,16 +263,23 @@ Workflow: `.github/workflows/deploy.yml`
 
 ### Environment Variables
 
-Configure these environment variables for production:
-- `SPRING_PROFILES_ACTIVE` - Active Spring profile
-- `SPRING_DATASOURCE_URL` - PostgreSQL connection URL
-- `SPRING_DATASOURCE_USERNAME` - Database username
-- `SPRING_DATASOURCE_PASSWORD` - Database password
+See [`.env.example`](.env.example) for a copy-paste template. Required/optional
+variables (set as environment variables or via secrets in CI):
+
+- `SPRING_PROFILES_ACTIVE` - Active Spring profile (`dev` | `prod`)
+- `DATABASE_URL` / `DATABASE_USERNAME` / `DATABASE_PASSWORD` - PostgreSQL connection
+  (the deploy pipeline passes the equivalent `SPRING_DATASOURCE_*` variables)
 - `JWT_SECRET` - Secret key for JWT token signing
-- `CORS_ORIGIN` - Frontend origin for CORS
-- `FRONTEND_URL` - Frontend base URL
-- `MAIL_USERNAME` - Email account username
-- `MAIL_PASSWORD` - Email account password
+- `CORS_ORIGIN` - Frontend origin allowed by CORS (exact, no trailing slash)
+- `FRONTEND_URL` - Frontend base URL (used in email links)
+- `MAIL_USERNAME` / `MAIL_PASSWORD` - SMTP credentials
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` - Google OAuth2 sign-in
+- `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` / `AWS_S3_BUCKET` -
+  S3 file storage (S3 is enabled only when an access key is provided)
+- `REDIS_HOST` / `REDIS_PORT` - Redis cache
+
+Frontend build var (set at build time): `VITE_API_URL` - API base URL
+(e.g. `https://your-domain/api/v1`).
 
 ## Security Features
 
